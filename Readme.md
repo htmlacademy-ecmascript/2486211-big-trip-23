@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Анастасия Захарова](https://up.htmlacademy.ru/ecmascript/23/user/2486211).
-* Наставник: `Yulia Volkova`.
+* Наставник: [Yulia Volkova](https://htmlacademy.ru/profile/julie_volkova).
 
 ---
 
