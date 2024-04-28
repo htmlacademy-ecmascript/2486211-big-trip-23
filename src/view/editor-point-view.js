@@ -1,6 +1,6 @@
 import { createElement } from '../render.js';
 import { createOfferItemTemplate, createTypeGroupTemplate } from './editor-form-elements.js';
-import { GROUP_TYPES, DESTINATION, AVAILABLE_OFFERS } from '../constans.js';
+import { GROUP_TYPES, DESTINATIONS, AVAILABLE_OFFERS } from '../constants.js';
 
 const createEditorPointTemplate = () => `
     <li class="trip-events__item">
@@ -27,7 +27,7 @@ const createEditorPointTemplate = () => `
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Chamonix" list="destination-list-1">
           <datalist id="destination-list-1">
-            ${DESTINATION.map((type) => `<option value="${type}"></option>`).join('')}
+            ${DESTINATIONS.map((type) => `<option value="${type}"></option>`).join('')}
           </datalist>
         </div>
 

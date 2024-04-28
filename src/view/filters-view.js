@@ -1,7 +1,5 @@
 import { createElement } from '../render.js';
-
-const FILTER_TYPES = ['Everything', 'Future', 'Present', 'Past'];
-
+import { FILTER_TYPES } from '../constants.js';
 const createFilterItemTemplate = (type) => `
   <div class="trip-filters__filter">
     <input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}">
@@ -9,7 +7,7 @@ const createFilterItemTemplate = (type) => `
   </div>
 `;
 
-const createFilterTemplate = () => `
+const createFiltersTemplate = () => `
     <form class="trip-filters" action="#" method="get">
       ${FILTER_TYPES.map((type) => createFilterItemTemplate(type)).join('').toLowerCase()}
       <button class="visually-hidden" type="submit">Accept filter</button>
@@ -18,7 +16,7 @@ const createFilterTemplate = () => `
 
 export default class FiltersView {
   getTemplate() {
-    return createFilterTemplate();
+    return createFiltersTemplate();
   }
 
   getElement() {

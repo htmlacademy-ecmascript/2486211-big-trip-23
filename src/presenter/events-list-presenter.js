@@ -6,19 +6,19 @@ import { render } from '../render.js';
 
 
 export default class EventsListPresenter {
-  EventsListComponent = new EventsListView();
+  eventsListComponent = new EventsListView();
 
   constructor({eventsListContainer}) {
     this.eventsListContainer = eventsListContainer;
   }
 
   init() {
-    render(this.EventsListComponent, this.eventsListContainer);
-    render(new EditorPointView(), this.EventsListComponent.getElement());
-    render(new NewPointView(), this.EventsListComponent.getElement());
+    render(this.eventsListComponent, this.eventsListContainer);
+    render(new EditorPointView(), this.eventsListComponent.getElement());
+    render(new NewPointView(), this.eventsListComponent.getElement());
 
     for (let i = 0; i < 3; i++) {
-      render(new EventsItemView(), this.EventsListComponent.getElement());
+      render(new EventsItemView(), this.eventsListComponent.getElement());
     }
   }
 }

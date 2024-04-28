@@ -1,6 +1,5 @@
 import { createElement } from '../render.js';
-
-const SORT_TYPES = ['Day', 'Event', 'Time', 'Price', 'Offers'];
+import { SORT_TYPES } from '../constants.js';
 
 const createSortingItemTemplate = (type) => `
   <div class="trip-sort__item  trip-sort__item--${type}">

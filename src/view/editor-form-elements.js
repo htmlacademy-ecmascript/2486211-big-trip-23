@@ -1,4 +1,4 @@
-import { ID_IMAGES } from '../constans.js';
+import { ID_IMAGES } from '../constants.js';
 
 const createOfferItemTemplate = (type, title, price) => `
   <div class="event__offer-selector">
