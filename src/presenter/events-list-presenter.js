@@ -1,7 +1,7 @@
-import EventsListView from '../view/events-list-view.js';
-import EventsItemView from '../view/events-item-view.js';
-import EditorPointView from '../view/editor-point-view.js';
-import NewPointView from '../view/new-point-view.js';
+import EventsListView from '../view/events-list.js';
+import EventsItemView from '../view/events-point.js';
+import EditorPointView from '../view/editor-point.js';
+import NewPointView from '../view/new-point.js';
 import { render } from '../render.js';
 
 
