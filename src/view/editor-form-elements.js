@@ -11,9 +11,9 @@ const createOfferItemTemplate = (type, title, price) => `
   </div>
 `;
 
-const createTypeGroupTemplate = (group) => `
+const createTypeGroupTemplate = (group, className) => `
   <div class="event__type-item">
-    <input id="event-type-${group.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${group.toLowerCase()}">
+    <input id="event-type-${group.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${group.toLowerCase()}" ${className}>
     <label class="event__type-label  event__type-label--${group.toLowerCase()}" for="event-type-${group.toLowerCase()}-1">${group}</label>
   </div>
 `;
