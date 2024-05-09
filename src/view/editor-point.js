@@ -1,15 +1,18 @@
 import { createElement } from '../render.js';
-import { mockDestinations } from '../mock/destination.js';
 import { createOfferItemTemplate, createTypeGroupTemplate } from './editor-form-elements.js';
-import { GROUP_TYPES, AVAILABLE_OFFERS } from '../constants.js';
+import { GROUP_TYPES } from '../constants.js';
 
-const createEditorPointTemplate = (point) => {
-  const { basePrice, type, destination } = point;
-  const pointDestination = mockDestinations.find((item) => item.id === destination);
+const createEditorPointTemplate = (point, allOffers, pointDestination, allDestination) => {
+  const { basePrice, type } = point;
   const typeName = type[0].toUpperCase() + type.slice(1, type.length);
   const { name, description } = pointDestination;
+  const createAllOffers = allOffers.offers
+    .map((offer) => {
+      const checkedClassName = point.offers.includes(offer.id) ? 'checked' : '';
+      return createOfferItemTemplate(allOffers.type, offer.title, offer.price, checkedClassName);
+    }).join('');
 
-  const createDesinationTemplate = mockDestinations
+  const createDesinationTemplate = allDestination
     .map((item) => `<option value="${item.name}"></option>`).join('');
 
   const createTypeList = GROUP_TYPES
@@ -74,7 +77,7 @@ const createEditorPointTemplate = (point) => {
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-            ${AVAILABLE_OFFERS.map((offer) => createOfferItemTemplate(offer.type, offer.title, offer.price)).join('')}
+            ${createAllOffers}
           </div>
         </section>
 
@@ -88,13 +91,16 @@ const createEditorPointTemplate = (point) => {
   );
 };
 
-export default class EditorPointView {
-  constructor({point}) {
+export default class EditorPoint {
+  constructor({point, allOffers, pointDestination, allDestination}) {
     this.point = point;
+    this.allOffers = allOffers;
+    this.pointDestination = pointDestination;
+    this.allDestination = allDestination;
   }
 
   getTemplate() {
-    return createEditorPointTemplate(this.point);
+    return createEditorPointTemplate(this.point, this.allOffers, this.pointDestination, this.allDestination);
   }
 
   getElement() {

@@ -1,12 +1,11 @@
-import EventsListView from '../view/events-list.js';
-import EventsPointView from '../view/events-point.js';
-import EditorPointView from '../view/editor-point.js';
-// import NewPointView from '../view/new-point.js';
+import EventsList from '../view/events-list.js';
+import EventsPoint from '../view/events-point.js';
+import EditorPoint from '../view/editor-point.js';
 import { render } from '../render.js';
 
 
 export default class EventsListPresenter {
-  eventsListComponent = new EventsListView();
+  eventsListComponent = new EventsList();
 
   constructor({eventsListContainer, pointsModel}) {
     this.eventsListContainer = eventsListContainer;
@@ -17,11 +16,21 @@ export default class EventsListPresenter {
     this.eventsListPoints = [...this.pointsModel.getPoints()];
 
     render(this.eventsListComponent, this.eventsListContainer);
-    render(new EditorPointView({point: this.eventsListPoints[0]}), this.eventsListComponent.getElement());
-    // render(new NewPointView(), this.eventsListComponent.getElement());
+    const editorPoint = new EditorPoint({
+      point: this.eventsListPoints[0],
+      allOffers: this.pointsModel.getOffersByType(this.eventsListPoints[0].type),
+      pointDestination: this.pointsModel.getDestinationsById(this.eventsListPoints[0].destination),
+      allDestination: this.pointsModel.getDestinations()
+    });
+    render(editorPoint, this.eventsListComponent.getElement());
 
     for (let i = 1; i < this.eventsListPoints.length; i++) {
-      render(new EventsPointView({point: this.eventsListPoints[i]}), this.eventsListComponent.getElement());
+      const point = new EventsPoint({
+        point: this.eventsListPoints[i],
+        offers: [...this.pointsModel.getOffersById(this.eventsListPoints[i].type, this.eventsListPoints[i].offers)],
+        destination: this.pointsModel.getDestinationsById(this.eventsListPoints[i].destination)
+      });
+      render(point, this.eventsListComponent.getElement());
     }
   }
 }

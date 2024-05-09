@@ -1,14 +1,13 @@
 import { createElement } from '../render.js';
-import { mockDestinations } from '../mock/destination.js';
-import { mockOffers } from '../mock/offer.js';
+import { humanizePointDueDate } from '../utils.js';
 
-const createEventPointTemplate = (point) => {
-  const { basePrice, type, isFavorite, destination } = point;
+const createEventPointTemplate = (point, offers, destination) => {
+  const { basePrice, type, isFavorite, dateFrom } = point;
 
-  const pointDestination = mockDestinations.find((item) => item.id === destination);
+  const date = humanizePointDueDate(dateFrom);
+
   const typeName = type[0].toUpperCase() + type.slice(1, type.length);
-  const destinationName = pointDestination.name;
-  const pointOffer = mockOffers.find((item) => item.type === type);
+
   const createEventOfferTemplate = (title, price) => `
     <li class="event__offer">
       <span class="event__offer-title">${title}</span>
@@ -17,8 +16,8 @@ const createEventPointTemplate = (point) => {
     </li>
   `;
 
-  const createEventOffers = pointOffer.offers
-    .map((offer) => point.offers.includes(offer.id) ? createEventOfferTemplate(offer.title, offer.price) : '').join('');
+  const createEventOffers = offers
+    .map((offer) => createEventOfferTemplate(offer.title, offer.price)).join('');
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'
@@ -27,11 +26,11 @@ const createEventPointTemplate = (point) => {
   return (
     `<li class="trip-events__item">
       <div class="event">
-        <time class="event__date" datetime="2019-03-18">MAR 18</time>
+        <time class="event__date" datetime="2019-03-18">${date}</time>
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${typeName} ${destinationName}</h3>
+        <h3 class="event__title">${typeName} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
@@ -61,13 +60,15 @@ const createEventPointTemplate = (point) => {
   );
 };
 
-export default class EventsPointView {
-  constructor({point}) {
+export default class EventsPoint {
+  constructor({point, offers, destination}) {
     this.point = point;
+    this.offers = offers;
+    this.destination = destination;
   }
 
   getTemplate() {
-    return createEventPointTemplate(this.point);
+    return createEventPointTemplate(this.point, this.offers, this.destination);
   }
 
   getElement() {
