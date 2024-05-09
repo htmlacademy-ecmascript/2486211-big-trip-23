@@ -1,8 +1,8 @@
 import { ID_IMAGES } from '../constants.js';
 
-const createOfferItemTemplate = (type, title, price) => `
+const createOfferItemTemplate = (type, title, price, className) => `
   <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" type="checkbox" name="event-offer-${type}">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" type="checkbox" name="event-offer-${type}" ${className}>
     <label class="event__offer-label" for="event-offer-${type}-1">
       <span class="event__offer-title">${title}</span>
       &plus;&euro;&nbsp;
@@ -11,9 +11,9 @@ const createOfferItemTemplate = (type, title, price) => `
   </div>
 `;
 
-const createTypeGroupTemplate = (group) => `
+const createTypeGroupTemplate = (group, className) => `
   <div class="event__type-item">
-    <input id="event-type-${group.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${group.toLowerCase()}">
+    <input id="event-type-${group.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${group.toLowerCase()}" ${className}>
     <label class="event__type-label  event__type-label--${group.toLowerCase()}" for="event-type-${group.toLowerCase()}-1">${group}</label>
   </div>
 `;
