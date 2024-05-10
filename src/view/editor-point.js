@@ -10,7 +10,7 @@ const createEditorPointTemplate = (point, allOffers, pointDestination, allDestin
   const createAllOffers = allOffers.offers
     .map((offer) => {
       const checkedClassName = point.offers.includes(offer.id) ? 'checked' : '';
-      return createOfferItemTemplate(allOffers.type, offer.title, offer.price, checkedClassName);
+      return createOfferItemTemplate(allOffers.type, offer.title, offer.price, offer.id, checkedClassName);
     }).join('');
 
   const createDesinationTemplate = allDestination
