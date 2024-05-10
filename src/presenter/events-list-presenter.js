@@ -30,12 +30,16 @@ export default class EventsListPresenter {
     render(editorPoint, this.#eventsListComponent.element);
 
     for (let i = 1; i < this.#eventsListPoints.length; i++) {
-      const point = new EventsPoint({
-        point: this.#eventsListPoints[i],
-        offers: [...this.#pointsModel.getOffersById(this.#eventsListPoints[i].type, this.#eventsListPoints[i].offers)],
-        destination: this.#pointsModel.getDestinationsById(this.#eventsListPoints[i].destination)
-      });
-      render(point, this.#eventsListComponent.element);
+      this.#renderPoint(this.#eventsListPoints[i]);
     }
+  }
+
+  #renderPoint(point) {
+    const pointComponent = new EventsPoint({
+      point,
+      offers: [...this.#pointsModel.getOffersById(point.type, point.offers)],
+      destination: this.#pointsModel.getDestinationsById(point.destination)
+    });
+    render(pointComponent, this.#eventsListComponent.element);
   }
 }
