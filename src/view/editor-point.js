@@ -1,6 +1,6 @@
-import { createElement } from '../render.js';
 import { createOfferItemTemplate, createTypeGroupTemplate } from './editor-form-elements.js';
 import { GROUP_TYPES } from '../constants.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createEditorPointTemplate = (point, allOffers, pointDestination, allDestination) => {
   const { basePrice, type } = point;
@@ -91,27 +91,21 @@ const createEditorPointTemplate = (point, allOffers, pointDestination, allDestin
   );
 };
 
-export default class EditorPoint {
+export default class EditorPoint extends AbstractView {
+  #point = null;
+  #allOffers = null;
+  #pointDestination = null;
+  #allDestination = null;
+
   constructor({point, allOffers, pointDestination, allDestination}) {
-    this.point = point;
-    this.allOffers = allOffers;
-    this.pointDestination = pointDestination;
-    this.allDestination = allDestination;
+    super();
+    this.#point = point;
+    this.#allOffers = allOffers;
+    this.#pointDestination = pointDestination;
+    this.#allDestination = allDestination;
   }
 
-  getTemplate() {
-    return createEditorPointTemplate(this.point, this.allOffers, this.pointDestination, this.allDestination);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createEditorPointTemplate(this.#point, this.#allOffers, this.#pointDestination, this.#allDestination);
   }
 }

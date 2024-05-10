@@ -1,7 +1,7 @@
 import EventsList from '../view/events-list.js';
 import EventsPoint from '../view/events-point.js';
 import EditorPoint from '../view/editor-point.js';
-import { render } from '../render.js';
+import { render } from '../framework/render.js';
 
 
 export default class EventsListPresenter {
@@ -22,7 +22,7 @@ export default class EventsListPresenter {
       pointDestination: this.pointsModel.getDestinationsById(this.eventsListPoints[0].destination),
       allDestination: this.pointsModel.getDestinations()
     });
-    render(editorPoint, this.eventsListComponent.getElement());
+    render(editorPoint, this.eventsListComponent.element);
 
     for (let i = 1; i < this.eventsListPoints.length; i++) {
       const point = new EventsPoint({
@@ -30,7 +30,7 @@ export default class EventsListPresenter {
         offers: [...this.pointsModel.getOffersById(this.eventsListPoints[i].type, this.eventsListPoints[i].offers)],
         destination: this.pointsModel.getDestinationsById(this.eventsListPoints[i].destination)
       });
-      render(point, this.eventsListComponent.getElement());
+      render(point, this.eventsListComponent.element);
     }
   }
 }
