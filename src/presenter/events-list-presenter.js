@@ -1,7 +1,7 @@
 import EventsList from '../view/events-list.js';
 import EventsPoint from '../view/events-point.js';
 import EditorPoint from '../view/editor-point.js';
-import { render } from '../framework/render.js';
+import { render, replace } from '../framework/render.js';
 
 
 export default class EventsListPresenter {
@@ -21,13 +21,6 @@ export default class EventsListPresenter {
     this.#eventsListPoints = [...this.#pointsModel.points];
 
     render(this.#eventsListComponent, this.#eventsListContainer);
-    const editorPoint = new EditorPoint({
-      point: this.#eventsListPoints[0],
-      allOffers: this.#pointsModel.getOffersByType(this.#eventsListPoints[0].type),
-      pointDestination: this.#pointsModel.getDestinationsById(this.#eventsListPoints[0].destination),
-      allDestination: this.#pointsModel.getDestinations()
-    });
-    render(editorPoint, this.#eventsListComponent.element);
 
     for (let i = 1; i < this.#eventsListPoints.length; i++) {
       this.#renderPoint(this.#eventsListPoints[i]);
@@ -35,11 +28,43 @@ export default class EventsListPresenter {
   }
 
   #renderPoint(point) {
+    const escKeyDownHandler = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    };
+
     const pointComponent = new EventsPoint({
       point,
       offers: [...this.#pointsModel.getOffersById(point.type, point.offers)],
-      destination: this.#pointsModel.getDestinationsById(point.destination)
+      destination: this.#pointsModel.getDestinationsById(point.destination),
+      onEditClick: () => {
+        replacePointToForm();
+        document.addEventListener('keydown', escKeyDownHandler);
+      }
     });
+
+    const pointEditComponent = new EditorPoint({
+      point,
+      allOffers: this.#pointsModel.getOffersByType(point.type),
+      pointDestination: this.#pointsModel.getDestinationsById(point.destination),
+      allDestination: this.#pointsModel.getDestinations(),
+      onFormSubmit: () => {
+        replaceFormToPoint();
+        document.removeEventListener('keydown', escKeyDownHandler);
+      }
+    });
+
+    function replacePointToForm() {
+      replace(pointEditComponent, pointComponent);
+    }
+
+    function replaceFormToPoint() {
+      replace(pointComponent, pointEditComponent);
+    }
+
     render(pointComponent, this.#eventsListComponent.element);
   }
 }

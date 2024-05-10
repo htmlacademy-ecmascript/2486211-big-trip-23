@@ -97,15 +97,26 @@ export default class EditorPoint extends AbstractView {
   #pointDestination = null;
   #allDestination = null;
 
-  constructor({point, allOffers, pointDestination, allDestination}) {
+  #handleFormSubmit = null;
+
+  constructor({point, allOffers, pointDestination, allDestination, onFormSubmit}) {
     super();
     this.#point = point;
     this.#allOffers = allOffers;
     this.#pointDestination = pointDestination;
     this.#allDestination = allDestination;
+    this.#handleFormSubmit = onFormSubmit;
+
+    this.element.querySelector('form')
+      .addEventListener('submit', this.#formSubmitHandler);
   }
 
   get template() {
     return createEditorPointTemplate(this.#point, this.#allOffers, this.#pointDestination, this.#allDestination);
   }
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 }
