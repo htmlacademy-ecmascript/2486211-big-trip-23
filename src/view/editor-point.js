@@ -13,6 +13,17 @@ const createEditorPointTemplate = (point, allOffers, pointDestination, allDestin
       return createOfferItemTemplate(allOffers.type, offer.title, offer.price, offer.id, checkedClassName);
     }).join('');
 
+  const createSectionOffers = allOffers.offers.length > 0
+    ? `<section class="event__section  event__section--offers">
+        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+
+        <div class="event__available-offers">
+          ${createAllOffers}
+        </div>
+      </section>
+    `
+    : '';
+
   const createDesinationTemplate = allDestination
     .map((item) => `<option value="${item.name}"></option>`).join('');
 
@@ -74,13 +85,7 @@ const createEditorPointTemplate = (point, allOffers, pointDestination, allDestin
         </button>
       </header>
       <section class="event__details">
-        <section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-          <div class="event__available-offers">
-            ${createAllOffers}
-          </div>
-        </section>
+        ${createSectionOffers}
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
