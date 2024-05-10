@@ -1,10 +1,11 @@
 import { createOfferItemTemplate, createTypeGroupTemplate } from './editor-form-elements.js';
 import { GROUP_TYPES } from '../constants.js';
 import AbstractView from '../framework/view/abstract-view.js';
+import { makeCapitalized } from '../utils.js';
 
 const createEditorPointTemplate = (point, allOffers, pointDestination, allDestination) => {
   const { basePrice, type } = point;
-  const typeName = type[0].toUpperCase() + type.slice(1, type.length);
+  const typeName = makeCapitalized(type);
   const { name, description } = pointDestination;
   const createAllOffers = allOffers.offers
     .map((offer) => {

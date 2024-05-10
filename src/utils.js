@@ -6,4 +6,6 @@ const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.
 
 const humanizePointDueDate = (dueDate) => dueDate ? dayjs(dueDate).format(DATE_FORMAT) : '';
 
-export { getRandomArrayElement, humanizePointDueDate };
+const makeCapitalized = (type) => type[0].toUpperCase() + type.slice(1, type.length);
+
+export { getRandomArrayElement, humanizePointDueDate, makeCapitalized };

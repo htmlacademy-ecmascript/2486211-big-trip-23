@@ -1,12 +1,12 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizePointDueDate } from '../utils.js';
+import { humanizePointDueDate, makeCapitalized } from '../utils.js';
 
 const createEventPointTemplate = (point, offers, destination) => {
   const { basePrice, type, isFavorite, dateFrom } = point;
 
   const date = humanizePointDueDate(dateFrom);
 
-  const typeName = type[0].toUpperCase() + type.slice(1, type.length);
+  const typeName = makeCapitalized(type);
 
   const createEventOfferTemplate = (title, price) => `
     <li class="event__offer">
