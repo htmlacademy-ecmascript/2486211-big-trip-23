@@ -22,7 +22,7 @@ export default class EventsListPresenter {
 
     render(this.#eventsListComponent, this.#eventsListContainer);
 
-    for (let i = 1; i < this.#eventsListPoints.length; i++) {
+    for (let i = 0; i < this.#eventsListPoints.length; i++) {
       this.#renderPoint(this.#eventsListPoints[i]);
     }
   }
@@ -34,6 +34,11 @@ export default class EventsListPresenter {
         replaceFormToPoint();
         document.removeEventListener('keydown', escKeyDownHandler);
       }
+    };
+
+    const hideEditorPoint = () => {
+      replaceFormToPoint();
+      document.removeEventListener('keydown', escKeyDownHandler);
     };
 
     const pointComponent = new EventsPoint({
@@ -52,8 +57,10 @@ export default class EventsListPresenter {
       pointDestination: this.#pointsModel.getDestinationsById(point.destination),
       allDestination: this.#pointsModel.getDestinations(),
       onFormSubmit: () => {
-        replaceFormToPoint();
-        document.removeEventListener('keydown', escKeyDownHandler);
+        hideEditorPoint();
+      },
+      onEditRollUp: () => {
+        hideEditorPoint();
       }
     });
 
