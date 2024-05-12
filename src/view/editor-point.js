@@ -4,10 +4,9 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { makeCapitalized } from '../utils/utils.js';
 import { humanizePointDueDate, DateFormat } from '../utils/date-format-utils.js';
 
-const createEditorPointTemplate = (point, allOffers, pointDestination, allDestination) => {
+const createEditorPointTemplate = (point, allOffers, pointDestination, allDestinations) => {
   const { basePrice, type, dateFrom, dateTo } = point;
   const { name, description } = pointDestination;
-
   const startTime = humanizePointDueDate(dateFrom, DateFormat.FULL_DATE_FORMAT);
   const endTime = humanizePointDueDate(dateTo, DateFormat.FULL_DATE_FORMAT);
   const typeName = makeCapitalized(type);
@@ -29,7 +28,7 @@ const createEditorPointTemplate = (point, allOffers, pointDestination, allDestin
     `
     : '';
 
-  const createDesinationTemplate = allDestination
+  const createDesinationTemplate = allDestinations
     .map((item) => `<option value="${item.name}"></option>`).join('');
 
   const createTypeList = GROUP_TYPES
@@ -106,17 +105,17 @@ export default class EditorPoint extends AbstractView {
   #point = null;
   #allOffers = null;
   #pointDestination = null;
-  #allDestination = null;
+  #allDestinations = [];
 
   #handleFormSubmit = null;
   #handleEditRollUp = null;
 
-  constructor({point, allOffers, pointDestination, allDestination, onFormSubmit, onEditRollUp}) {
+  constructor({point, allOffers, pointDestination, allDestinations, onFormSubmit, onEditRollUp}) {
     super();
     this.#point = point;
     this.#allOffers = allOffers;
     this.#pointDestination = pointDestination;
-    this.#allDestination = allDestination;
+    this.#allDestinations = allDestinations;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleEditRollUp = onEditRollUp;
 
@@ -128,7 +127,7 @@ export default class EditorPoint extends AbstractView {
   }
 
   get template() {
-    return createEditorPointTemplate(this.#point, this.#allOffers, this.#pointDestination, this.#allDestination);
+    return createEditorPointTemplate(this.#point, this.#allOffers, this.#pointDestination, this.#allDestinations);
   }
 
   #formSubmitHandler = (evt) => {

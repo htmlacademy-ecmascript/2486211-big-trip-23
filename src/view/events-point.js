@@ -65,7 +65,7 @@ const createEventPointTemplate = (point, offers, destination) => {
 
 export default class EventsPoint extends AbstractView {
   #point = null;
-  #offers = null;
+  #offers = [];
   #destination = null;
 
   #handleEditClick = null;

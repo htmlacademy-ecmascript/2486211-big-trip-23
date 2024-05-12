@@ -41,13 +41,17 @@ export default class EventsListPresenter {
       document.removeEventListener('keydown', escKeyDownHandler);
     };
 
+    const showEditorPoint = () => {
+      replacePointToForm();
+      document.addEventListener('keydown', escKeyDownHandler);
+    };
+
     const pointComponent = new EventsPoint({
       point,
       offers: [...this.#pointsModel.getOffersById(point.type, point.offers)],
       destination: this.#pointsModel.getDestinationsById(point.destination),
       onEditClick: () => {
-        replacePointToForm();
-        document.addEventListener('keydown', escKeyDownHandler);
+        showEditorPoint();
       }
     });
 
@@ -55,7 +59,7 @@ export default class EventsListPresenter {
       point,
       allOffers: this.#pointsModel.getOffersByType(point.type),
       pointDestination: this.#pointsModel.getDestinationsById(point.destination),
-      allDestination: this.#pointsModel.destinations,
+      allDestinations: this.#pointsModel.destinations,
       onFormSubmit: () => {
         hideEditorPoint();
       },
