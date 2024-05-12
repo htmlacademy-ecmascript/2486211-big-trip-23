@@ -13,21 +13,21 @@ export default class PointsModel {
     return this.#points;
   }
 
-  getDestinations() {
+  get destinations() {
     return this.#destinations;
   }
 
-  getOffers() {
+  get offers() {
     return this.#offers;
   }
 
   getDestinationsById(id) {
-    const allDestinations = this.getDestinations();
+    const allDestinations = this.destinations;
     return allDestinations.find((item) => item.id === id);
   }
 
   getOffersByType(type) {
-    const allOffers = this.getOffers();
+    const allOffers = this.offers;
     return allOffers.find((item) => item.type === type);
   }
 

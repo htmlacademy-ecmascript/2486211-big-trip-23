@@ -55,7 +55,7 @@ export default class EventsListPresenter {
       point,
       allOffers: this.#pointsModel.getOffersByType(point.type),
       pointDestination: this.#pointsModel.getDestinationsById(point.destination),
-      allDestination: this.#pointsModel.getDestinations(),
+      allDestination: this.#pointsModel.destinations,
       onFormSubmit: () => {
         hideEditorPoint();
       },
