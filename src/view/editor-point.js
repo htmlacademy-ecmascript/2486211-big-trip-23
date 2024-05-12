@@ -1,12 +1,17 @@
 import { createOfferItemTemplate, createTypeGroupTemplate } from './editor-form-elements.js';
 import { GROUP_TYPES } from '../constants.js';
 import AbstractView from '../framework/view/abstract-view.js';
-import { makeCapitalized } from '../utils.js';
+import { makeCapitalized } from '../utils/utils.js';
+import { humanizePointDueDate, DateFormat } from '../utils/date-format-utils.js';
 
 const createEditorPointTemplate = (point, allOffers, pointDestination, allDestination) => {
-  const { basePrice, type } = point;
-  const typeName = makeCapitalized(type);
+  const { basePrice, type, dateFrom, dateTo } = point;
   const { name, description } = pointDestination;
+
+  const startTime = humanizePointDueDate(dateFrom, DateFormat.FULL_DATE_FORMAT);
+  const endTime = humanizePointDueDate(dateTo, DateFormat.FULL_DATE_FORMAT);
+  const typeName = makeCapitalized(type);
+
   const createAllOffers = allOffers.offers
     .map((offer) => {
       const checkedClassName = point.offers.includes(offer.id) ? 'checked' : '';
@@ -64,10 +69,10 @@ const createEditorPointTemplate = (point, allOffers, pointDestination, allDestin
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="18/03/19 12:25">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="18/03/19 13:35">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endTime}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
