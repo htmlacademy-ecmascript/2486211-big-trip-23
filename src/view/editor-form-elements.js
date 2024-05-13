@@ -1,9 +1,9 @@
 import { ID_IMAGES } from '../constants.js';
 
-const createOfferItemTemplate = (type, title, price, className) => `
+const createOfferItemTemplate = (type, title, price, id, className) => `
   <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-1" type="checkbox" name="event-offer-${type}" ${className}>
-    <label class="event__offer-label" for="event-offer-${type}-1">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${id}-1" type="checkbox" name="event-offer-${type}" ${className}>
+    <label class="event__offer-label" for="event-offer-${id}-1">
       <span class="event__offer-title">${title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${price}</span>

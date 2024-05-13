@@ -1,12 +1,15 @@
-import { createElement } from '../render.js';
-import { humanizePointDueDate } from '../utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
+import { humanizePointDueDate, DateFormat, getDuration } from '../utils/date-format-utils.js';
+import { makeCapitalized } from '../utils/common.js';
 
 const createEventPointTemplate = (point, offers, destination) => {
-  const { basePrice, type, isFavorite, dateFrom } = point;
+  const { basePrice, type, isFavorite, dateFrom, dateTo } = point;
 
-  const date = humanizePointDueDate(dateFrom);
-
-  const typeName = type[0].toUpperCase() + type.slice(1, type.length);
+  const eventDate = humanizePointDueDate(dateFrom, DateFormat.DATE_FROM_FORMAT);
+  const startTime = humanizePointDueDate(dateFrom, DateFormat.TIME_FORMAT);
+  const endTime = humanizePointDueDate(dateTo, DateFormat.TIME_FORMAT);
+  const eventDuration = getDuration(dateFrom, dateTo);
+  const typeName = makeCapitalized(type);
 
   const createEventOfferTemplate = (title, price) => `
     <li class="event__offer">
@@ -26,18 +29,18 @@ const createEventPointTemplate = (point, offers, destination) => {
   return (
     `<li class="trip-events__item">
       <div class="event">
-        <time class="event__date" datetime="2019-03-18">${date}</time>
+        <time class="event__date" datetime="2019-03-18">${eventDate}</time>
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
         </div>
         <h3 class="event__title">${typeName} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
+            <time class="event__start-time" datetime="${dateFrom}">${startTime}</time>
             &mdash;
-            <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
+            <time class="event__end-time" datetime="${dateTo}">${endTime}</time>
           </p>
-          <p class="event__duration">30M</p>
+          <p class="event__duration">${eventDuration}</p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
@@ -60,26 +63,30 @@ const createEventPointTemplate = (point, offers, destination) => {
   );
 };
 
-export default class EventsPoint {
-  constructor({point, offers, destination}) {
-    this.point = point;
-    this.offers = offers;
-    this.destination = destination;
+export default class EventsPoint extends AbstractView {
+  #point = null;
+  #offers = [];
+  #destination = null;
+
+  #handleEditClick = null;
+
+  constructor({point, offers, destination, onEditClick}) {
+    super();
+    this.#point = point;
+    this.#offers = offers;
+    this.#destination = destination;
+    this.#handleEditClick = onEditClick;
+
+    this.element.querySelector('.event__rollup-btn')
+      .addEventListener('click', this.#editClickHandler);
   }
 
-  getTemplate() {
-    return createEventPointTemplate(this.point, this.offers, this.destination);
+  get template() {
+    return createEventPointTemplate(this.#point, this.#offers, this.#destination);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditClick();
+  };
 }
