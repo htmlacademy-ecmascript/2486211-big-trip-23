@@ -2,6 +2,7 @@ import EventsList from '../view/events-list.js';
 import EventsPoint from '../view/events-point.js';
 import EditorPoint from '../view/editor-point.js';
 import { render, replace } from '../framework/render.js';
+import Sorting from '../view/sorting.js';
 
 
 export default class EventsListPresenter {
@@ -9,6 +10,7 @@ export default class EventsListPresenter {
   #pointsModel = null;
 
   #eventsListComponent = new EventsList();
+  #sorting = new Sorting();
 
   #eventsListPoints = [];
 
@@ -20,6 +22,7 @@ export default class EventsListPresenter {
   init() {
     this.#eventsListPoints = [...this.#pointsModel.points];
 
+    render(this.#sorting, this.#eventsListContainer);
     render(this.#eventsListComponent, this.#eventsListContainer);
 
     for (let i = 0; i < this.#eventsListPoints.length; i++) {
@@ -50,9 +53,7 @@ export default class EventsListPresenter {
       point,
       offers: [...this.#pointsModel.getOffersById(point.type, point.offers)],
       destination: this.#pointsModel.getDestinationsById(point.destination),
-      onEditClick: () => {
-        showEditorPoint();
-      }
+      onEditClick: () => showEditorPoint(),
     });
 
     const pointEditComponent = new EditorPoint({
@@ -60,12 +61,8 @@ export default class EventsListPresenter {
       allOffers: this.#pointsModel.getOffersByType(point.type),
       pointDestination: this.#pointsModel.getDestinationsById(point.destination),
       allDestinations: this.#pointsModel.destinations,
-      onFormSubmit: () => {
-        hideEditorPoint();
-      },
-      onEditRollUp: () => {
-        hideEditorPoint();
-      }
+      onFormSubmit: () => hideEditorPoint(),
+      onEditRollUp: () => hideEditorPoint(),
     });
 
     function replacePointToForm() {
