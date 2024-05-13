@@ -1,7 +1,7 @@
 import { createOfferItemTemplate, createTypeGroupTemplate } from './editor-form-elements.js';
 import { GROUP_TYPES } from '../constants.js';
 import AbstractView from '../framework/view/abstract-view.js';
-import { makeCapitalized } from '../utils/utils.js';
+import { makeCapitalized } from '../utils/common.js';
 import { humanizePointDueDate, DateFormat } from '../utils/date-format-utils.js';
 
 const createEditorPointTemplate = (point, allOffers, pointDestination, allDestinations) => {

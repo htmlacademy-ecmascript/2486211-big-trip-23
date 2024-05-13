@@ -1,5 +1,6 @@
 import { FILTER_TYPES } from '../constants.js';
 import AbstractView from '../framework/view/abstract-view.js';
+
 const createFilterItemTemplate = (type) => `
   <div class="trip-filters__filter">
     <input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}">
