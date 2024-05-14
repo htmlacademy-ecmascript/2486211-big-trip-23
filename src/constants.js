@@ -5,4 +5,13 @@ const SORT_TYPES = ['Day', 'Event', 'Time', 'Price', 'Offers'];
 
 const ID_IMAGES = [1, 2, 3, 4, 5];
 
-export { GROUP_TYPES, DESTINATIONS, FILTER_TYPES, SORT_TYPES, ID_IMAGES};
+const StubText = {
+  EVERTHING: 'Click New Event to create your first point',
+  PAST: 'There are no past events now',
+  PRESENT: 'There are no present events now',
+  FUTURE: 'There are no future events now',
+  LOADING: 'Loading...',
+  LOADING_ERROR: 'Failed to load latest route information'
+};
+
+export { GROUP_TYPES, DESTINATIONS, FILTER_TYPES, SORT_TYPES, ID_IMAGES, StubText};
