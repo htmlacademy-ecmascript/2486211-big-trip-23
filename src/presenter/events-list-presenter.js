@@ -15,7 +15,7 @@ export default class EventsListPresenter {
 
   #eventsListComponent = new EventsList();
   #sorting = new Sorting();
-  #listEmpty = new Stub(StubText.EVERTHING);
+  #listEmpty = new Stub(StubText.EVERYTHING);
 
   constructor({eventsListContainer, pointsModel}) {
     this.#eventsListContainer = eventsListContainer;
