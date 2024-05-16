@@ -4,6 +4,7 @@ import Sorting from '../view/sorting.js';
 import Stub from '../view/stub.js';
 import { StubText } from '../constants.js';
 import PointPresenter from './point-presenter.js';
+import { updateItem } from '../utils/common.js';
 
 
 export default class PagePresenter {
@@ -69,4 +70,10 @@ export default class PagePresenter {
     this.#renderSorting();
     this.#renderEventsList();
   }
+
+  #handlePointChange = (updatedPoint) => {
+    this.#eventsListPoints = updateItem(this.#eventsListPoints, updatedPoint);
+    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
+  };
+
 }

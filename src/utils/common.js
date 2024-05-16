@@ -2,4 +2,6 @@ const getRandomArrayElement = (items) => items[Math.floor(Math.random() * items.
 
 const makeCapitalized = (type) => type[0].toUpperCase() + type.slice(1, type.length);
 
-export { getRandomArrayElement, makeCapitalized };
+const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
+
+export { getRandomArrayElement, makeCapitalized, updateItem };
