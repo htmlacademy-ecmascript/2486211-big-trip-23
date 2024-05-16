@@ -10,6 +10,7 @@ export default class PagePresenter {
   #eventsListContainer = null;
   #pointsModel = null;
   #eventsListPoints = [];
+  #pointPresenters = new Map();
 
 
   #eventsListComponent = new EventsList();
@@ -32,12 +33,18 @@ export default class PagePresenter {
       pointsModel: this.#pointsModel,
     });
     pointPresenter.init(point);
+    this.#pointPresenters.set(point.id, pointPresenter);
   }
 
   #renderPoints() {
     for (let i = 0; i < this.#eventsListPoints.length; i++) {
       this.#renderPoint(this.#eventsListPoints[i]);
     }
+  }
+
+  #clearPoints() {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
   }
 
   #renderListEmpty() {
