@@ -24,7 +24,7 @@ export default class EventsListPresenter {
 
   init() {
     this.#eventsListPoints = [...this.#pointsModel.points];
-    this.#renderEvents();
+    this.#renderPage();
   }
 
   #renderPoint(point) {
@@ -73,16 +73,32 @@ export default class EventsListPresenter {
     render(pointComponent, this.#eventsListComponent.element);
   }
 
-  #renderEvents() {
-
-    if (this.#eventsListPoints.length === 0) {
-      render(this.#listEmpty, this.#eventsListContainer);
-      return;
-    }
-    render(this.#sorting, this.#eventsListContainer);
-    render(this.#eventsListComponent, this.#eventsListContainer);
+  #renderPoints() {
     for (let i = 0; i < this.#eventsListPoints.length; i++) {
       this.#renderPoint(this.#eventsListPoints[i]);
     }
+  }
+
+  #renderListEmpty() {
+    render(this.#listEmpty, this.#eventsListContainer);
+  }
+
+  #renderSorting() {
+    render(this.#sorting, this.#eventsListContainer);
+  }
+
+  #renderEventsList() {
+    render(this.#eventsListComponent, this.#eventsListContainer);
+    this.#renderPoints();
+  }
+
+  #renderPage() {
+
+    if (this.#eventsListPoints.length === 0) {
+      this.#renderListEmpty();
+      return;
+    }
+    this.#renderSorting();
+    this.#renderEventsList();
   }
 }
