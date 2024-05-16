@@ -1,6 +1,6 @@
 import EventsPoint from '../view/events-point.js';
 import EditorPoint from '../view/editor-point.js';
-import { render, replace } from '../framework/render.js';
+import { remove, render, replace } from '../framework/render.js';
 
 export default class PointPresenter {
   #eventsListComponent = null;
@@ -19,6 +19,9 @@ export default class PointPresenter {
   init(point) {
     this.#point = point;
 
+    const prevPointComponent = this.#pointComponent;
+    const prevPointEditComponent = this.#pointEditComponent;
+
     this.#pointComponent = new EventsPoint({
       point: this.#point,
       offers: [...this.#pointsModel.getOffersById(point.type, point.offers)],
@@ -35,7 +38,26 @@ export default class PointPresenter {
       onEditRollUp: () => this.#handleFormClick(),
     });
 
-    render(this.#pointComponent, this.#eventsListComponent.element);
+    if (prevPointComponent === null || prevPointEditComponent === null) {
+      render(this.#pointComponent, this.#eventsListComponent.element);
+      return;
+    }
+
+    if (this.#eventsListComponent.contains(prevPointComponent.element)) {
+      replace(this.#pointComponent, prevPointComponent);
+    }
+
+    if (this.#eventsListComponent.contains(prevPointEditComponent.element)) {
+      replace(this.#pointEditComponent, prevPointEditComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevPointEditComponent);
+  }
+
+  destroy() {
+    remove(this.#pointComponent);
+    remove(this.#pointEditComponent);
   }
 
   #replaceFormToPoint() {
