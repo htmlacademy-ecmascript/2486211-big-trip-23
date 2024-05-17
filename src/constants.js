@@ -21,4 +21,9 @@ const StubText = {
   LOADING_ERROR: 'Failed to load latest route information'
 };
 
-export { GROUP_TYPES, DESTINATIONS, FILTER_TYPES, SORT_TYPES, ID_IMAGES, StubText, FilterType};
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
+export { GROUP_TYPES, DESTINATIONS, FILTER_TYPES, SORT_TYPES, ID_IMAGES, StubText, FilterType, Mode};

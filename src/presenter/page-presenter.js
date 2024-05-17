@@ -33,6 +33,7 @@ export default class PagePresenter {
       eventsListComponent: this.#eventsListComponent.element,
       pointsModel: this.#pointsModel,
       onDataChange: this.#handlePointChange,
+      onModeChange: this.#handleModeChange,
     });
     pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);
@@ -71,6 +72,10 @@ export default class PagePresenter {
     this.#renderSorting();
     this.#renderEventsList();
   }
+
+  #handleModeChange = () => {
+    this.#pointPresenters.forEach((presenter) => presenter.resetView());
+  };
 
   #handlePointChange = (updatedPoint) => {
     this.#eventsListPoints = updateItem(this.#eventsListPoints, updatedPoint);
