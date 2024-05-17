@@ -30,8 +30,9 @@ export default class PagePresenter {
 
   #renderPoint(point) {
     const pointPresenter = new PointPresenter({
-      eventsListComponent: this.#eventsListComponent,
+      eventsListComponent: this.#eventsListComponent.element,
       pointsModel: this.#pointsModel,
+      onDataChange: this.#handlePointChange,
     });
     pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);

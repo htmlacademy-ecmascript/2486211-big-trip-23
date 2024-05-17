@@ -11,9 +11,12 @@ export default class PointPresenter {
 
   #point = null;
 
-  constructor({eventsListComponent, pointsModel}) {
+  #handleDataChange = null;
+
+  constructor({eventsListComponent, pointsModel, onDataChange}) {
     this.#eventsListComponent = eventsListComponent;
     this.#pointsModel = pointsModel;
+    this.#handleDataChange = onDataChange;
   }
 
   init(point) {
@@ -26,7 +29,8 @@ export default class PointPresenter {
       point: this.#point,
       offers: [...this.#pointsModel.getOffersById(point.type, point.offers)],
       destination: this.#pointsModel.getDestinationsById(point.destination),
-      onEditClick: () => this.#handleEditClick(),
+      onEditClick: this.#handleEditClick,
+      onFavoriteClick: this.#handleFavoriteClick,
     });
 
     this.#pointEditComponent = new EditorPoint({
@@ -34,12 +38,12 @@ export default class PointPresenter {
       allOffers: this.#pointsModel.getOffersByType(point.type),
       pointDestination: this.#pointsModel.getDestinationsById(point.destination),
       allDestinations: this.#pointsModel.destinations,
-      onFormSubmit: () => this.#handleFormClick(),
-      onEditRollUp: () => this.#handleFormClick(),
+      onFormSubmit: this.#handleFormClick,
+      onEditRollUp: this.#handleFormClick,
     });
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
-      render(this.#pointComponent, this.#eventsListComponent.element);
+      render(this.#pointComponent, this.#eventsListComponent);
       return;
     }
 
@@ -78,11 +82,16 @@ export default class PointPresenter {
     }
   };
 
-  #handleFormClick = () => {
+  #handleFormClick = (point) => {
+    this.#handleDataChange(point);
     this.#replaceFormToPoint();
   };
 
-  #handleEditClick() {
+  #handleEditClick = () => {
     this.#replacePointToForm();
-  }
+  };
+
+  #handleFavoriteClick = () => {
+    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+  };
 }
