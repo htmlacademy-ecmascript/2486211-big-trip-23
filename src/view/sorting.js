@@ -15,7 +15,25 @@ const createSortingTemplate = () => `
 `;
 
 export default class Sorting extends AbstractView {
+  #handleSortTypeChange = null;
+
+  constructor({onSortTypeChange}) {
+    super();
+    this.#handleSortTypeChange = onSortTypeChange;
+
+    this.element.addEventListener('click', this.#sortTypeChangeHandler);
+  }
+
   get template() {
     return createSortingTemplate();
   }
+
+  #sortTypeChangeHandler = (evt) => {
+    if (evt.target.matches('input[name="trip-sort"]')) {
+      return;
+    }
+
+    evt.preventDefault();
+    this.#handleSortTypeChange(evt.target.dataset.sortType);
+  };
 }
