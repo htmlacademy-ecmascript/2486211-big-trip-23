@@ -1,9 +1,14 @@
 const GROUP_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
-const DESTINATIONS = ['Amsterdam', 'Geneva', 'Chamonix'];
-const FILTER_TYPES = ['Everything', 'Future', 'Present', 'Past'];
-const SORT_TYPES = ['Day', 'Event', 'Time', 'Price', 'Offers'];
 
 const ID_IMAGES = [1, 2, 3, 4, 5];
+
+const SortType = {
+  DAY: 'Day',
+  EVENT: 'Event',
+  TIME: 'Time',
+  PRICE: 'Price',
+  OFFERS: 'Offers'
+};
 
 const FilterType = {
   EVERYTHING: 'Everything',
@@ -21,4 +26,9 @@ const StubText = {
   LOADING_ERROR: 'Failed to load latest route information'
 };
 
-export { GROUP_TYPES, DESTINATIONS, FILTER_TYPES, SORT_TYPES, ID_IMAGES, StubText, FilterType};
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
+export { GROUP_TYPES, ID_IMAGES, StubText, FilterType, Mode, SortType};
