@@ -1,7 +1,9 @@
 import dayjs from 'dayjs';
 
-const sortByPrice = (pointA, pointB) => pointA.basePrice - pointB.basePrice;
+const getTimeDifference = ({dateFrom, dateTo}) => dayjs(dateTo).diff(dayjs(dateFrom));
 
-const sortByTime = (pointA, pointB) => dayjs(pointA.dueDate).diff(dayjs(pointB.dueDate));
+const sortByPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
+
+const sortByTime = (pointA, pointB) => getTimeDifference(pointB) - getTimeDifference(pointA);
 
 export { sortByPrice, sortByTime };
