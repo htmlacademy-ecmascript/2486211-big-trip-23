@@ -5,7 +5,7 @@ import Stub from '../view/stub.js';
 import { SortType, StubText } from '../constants.js';
 import PointPresenter from './point-presenter.js';
 import { updateItem } from '../utils/common.js';
-import { sortByPrice, sortByTime } from '../utils/sort.js';
+import { sortByDay, sortByPrice, sortByTime } from '../utils/sort.js';
 
 
 export default class PagePresenter {
@@ -91,7 +91,7 @@ export default class PagePresenter {
         this.#eventsListPoints.sort(sortByPrice);
         break;
       default:
-        this.#eventsListPoints = [...this.#sourcedPoints];
+        this.#eventsListPoints.sort(sortByDay);
     }
   }
 
