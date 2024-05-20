@@ -42,7 +42,6 @@ export default class Sorting extends AbstractView {
     if (!evt.target.matches('input[name="trip-sort"]')) {
       return;
     }
-    evt.preventDefault();
     this.#handleSortTypeChange(evt.target.dataset.sortType);
   };
 }
