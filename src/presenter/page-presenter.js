@@ -28,7 +28,7 @@ export default class PagePresenter {
   }
 
   init() {
-    this.#eventsListPoints = [...this.#pointsModel.points];
+    this.#eventsListPoints = [...this.#pointsModel.points].sort(sortByDay);
     this.#sourcedPoints = [...this.#pointsModel.points];
     this.#renderPage();
   }
