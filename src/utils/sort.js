@@ -6,6 +6,6 @@ const sortByPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
 
 const sortByTime = (pointA, pointB) => getTimeDifference(pointB) - getTimeDifference(pointA);
 
-const sortByDay = (pointA, pointB) => dayjs(pointB.dateFrom) - dayjs(pointA.dateFrom);
+const sortByDay = (pointA, pointB) => dayjs(pointA.dateFrom) - dayjs(pointB.dateFrom);
 
 export { sortByPrice, sortByTime, sortByDay };
