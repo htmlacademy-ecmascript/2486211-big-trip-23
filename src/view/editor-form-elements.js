@@ -1,5 +1,3 @@
-import { ID_IMAGES } from '../constants.js';
-
 const createOfferItemTemplate = (type, title, price, id, className) => `
   <div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${id}" type="checkbox" name="event-offer-${type}" ${className}>
@@ -18,13 +16,13 @@ const createTypeGroupTemplate = (group, className) => `
   </div>
 `;
 
-const createImageItemTemplate = (id) => `
-  <img class="event__photo" src="img/photos/${id}.jpg" alt="Event photo">
+const createImageItemTemplate = (src, description) => `
+  <img class="event__photo" src="${src}" alt="${description}">
 `;
-const createImageSection = () => `
+const createImageSection = (pictures) => `
   <div class="event__photos-container">
     <div class="event__photos-tape">
-      ${ID_IMAGES.map((id) => createImageItemTemplate(id)).join('')}
+      ${pictures.map(({src, description}) => createImageItemTemplate(src, description)).join('')}
     </div>
   </div>
   `;

@@ -1,4 +1,4 @@
-import { createOfferItemTemplate, createTypeGroupTemplate } from './editor-form-elements.js';
+import { createImageSection, createOfferItemTemplate, createTypeGroupTemplate } from './editor-form-elements.js';
 import { GROUP_TYPES } from '../constants.js';
 import AbstractView from '../framework/view/abstract-view.js';
 import { makeCapitalized } from '../utils/common.js';
@@ -6,10 +6,13 @@ import { humanizePointDueDate, DateFormat } from '../utils/date-format-utils.js'
 
 const createEditorPointTemplate = (point, allOffers, pointDestination, allDestinations) => {
   const { basePrice, type, dateFrom, dateTo } = point;
-  const { name, description } = pointDestination;
+  const { name, description, pictures } = pointDestination;
+
   const startTime = humanizePointDueDate(dateFrom, DateFormat.FULL_DATE_FORMAT);
   const endTime = humanizePointDueDate(dateTo, DateFormat.FULL_DATE_FORMAT);
+
   const typeName = makeCapitalized(type);
+  const imageSection = createImageSection(pictures);
 
   const createAllOffers = allOffers.offers
     .map((offer) => {
@@ -94,6 +97,7 @@ const createEditorPointTemplate = (point, allOffers, pointDestination, allDestin
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${description}</p>
+          ${imageSection}
         </section>
       </section>
     </form>

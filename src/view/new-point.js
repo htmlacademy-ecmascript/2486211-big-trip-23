@@ -1,4 +1,4 @@
-import { createOfferItemTemplate, createTypeGroupTemplate, createImageSection } from './editor-form-elements.js';
+import { createOfferItemTemplate, createTypeGroupTemplate } from './editor-form-elements.js';
 import { GROUP_TYPES, DESTINATIONS, AVAILABLE_OFFERS } from '../constants.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
@@ -63,7 +63,7 @@ const createNewPointTemplate = () => `
               <h3 class="event__section-title  event__section-title--destination">Destination</h3>
               <p class="event__destination-description">Geneva is a city in Switzerland that lies at the southern tip of expansive Lac Léman (Lake Geneva). Surrounded by the Alps and Jura mountains, the city has views of dramatic Mont Blanc.</p>
 
-              ${createImageSection()}
+
             </section>
           </section>
         </form>
