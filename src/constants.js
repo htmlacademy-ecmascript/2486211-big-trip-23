@@ -1,7 +1,5 @@
 const GROUP_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
-const ID_IMAGES = [1, 2, 3, 4, 5];
-
 const SortType = {
   DAY: 'Day',
   EVENT: 'Event',
@@ -31,4 +29,4 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
-export { GROUP_TYPES, ID_IMAGES, StubText, FilterType, Mode, SortType};
+export { GROUP_TYPES, StubText, FilterType, Mode, SortType};

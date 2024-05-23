@@ -5,7 +5,7 @@ import Stub from '../view/stub.js';
 import { SortType, StubText } from '../constants.js';
 import PointPresenter from './point-presenter.js';
 import { updateItem } from '../utils/common.js';
-import { sortByPrice, sortByTime } from '../utils/sort.js';
+import { sortByDay, sortByPrice, sortByTime } from '../utils/sort.js';
 
 
 export default class PagePresenter {
@@ -28,7 +28,7 @@ export default class PagePresenter {
   }
 
   init() {
-    this.#eventsListPoints = [...this.#pointsModel.points];
+    this.#eventsListPoints = [...this.#pointsModel.points].sort(sortByDay);
     this.#sourcedPoints = [...this.#pointsModel.points];
     this.#renderPage();
   }
@@ -61,6 +61,7 @@ export default class PagePresenter {
 
   #renderSorting() {
     this.#sorting = new Sorting({
+      checkedSortType: this.#defaultSortType,
       onSortTypeChange: this.#handleSortTypeChange
     });
     render(this.#sorting, this.#eventsListContainer);
@@ -83,17 +84,15 @@ export default class PagePresenter {
 
   #sortPoints(sortType) {
     switch (sortType) {
-      case SortType.TIME:
+      case 'time':
         this.#eventsListPoints.sort(sortByTime);
         break;
-      case SortType.PRICE:
+      case 'price':
         this.#eventsListPoints.sort(sortByPrice);
         break;
       default:
-        this.#eventsListPoints = [...this.#sourcedPoints];
+        this.#eventsListPoints.sort(sortByDay);
     }
-
-    this.#defaultSortType = sortType;
   }
 
   #handleModeChange = () => {
@@ -106,12 +105,12 @@ export default class PagePresenter {
     this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
   };
 
-  #handleSortTypeChange = (sortType) => {
-    if (this.#defaultSortType === sortType) {
+  #handleSortTypeChange = (checkedSortType) => {
+    if (this.#defaultSortType === checkedSortType) {
       return;
     }
-
-    this.#sortPoints(sortType);
+    this.#defaultSortType = checkedSortType;
+    this.#sortPoints(checkedSortType);
     this.#clearPoints();
     this.#renderEventsList();
   };
