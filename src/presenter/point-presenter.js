@@ -39,8 +39,9 @@ export default class PointPresenter {
 
     this.#pointEditComponent = new EditorPoint({
       point: this.#point,
-      allOffers: this.#pointsModel.getOffersByType(point.type),
+      typeOffers: this.#pointsModel.getOffersByType(point.type),
       pointDestination: this.#pointsModel.getDestinationsById(point.destination),
+      allOffers: this.#pointsModel.offers,
       allDestinations: this.#pointsModel.destinations,
       onFormSubmit: this.#handleFormClick,
       onEditRollUp: this.#handleFormClick,
