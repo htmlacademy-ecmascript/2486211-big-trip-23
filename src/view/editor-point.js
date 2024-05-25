@@ -199,6 +199,10 @@ export default class EditorPoint extends AbstractStatefulView {
   static parseStateToPoint(state) {
     const point = {...state};
 
+    if (!point.typeOffers) {
+      point.typeOffers = null;
+    }
+
     delete point.typeOffers;
 
     return point;
