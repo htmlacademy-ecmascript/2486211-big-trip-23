@@ -5,13 +5,15 @@ import { makeCapitalized } from '../utils/common.js';
 import { humanizePointDueDate, DateFormat } from '../utils/date-format-utils.js';
 
 const createEditorPointTemplate = (state, allDestinations) => {
-  const { basePrice, type, dateFrom, dateTo, offers, typeOffers } = state;
-  const { name, description, pictures } = state.destination;
+  const { basePrice, type, dateFrom, dateTo, offers, typeOffers, destination } = state;
 
   const startTime = humanizePointDueDate(dateFrom, DateFormat.FULL_DATE_FORMAT);
   const endTime = humanizePointDueDate(dateTo, DateFormat.FULL_DATE_FORMAT);
 
   const typeName = makeCapitalized(type);
+
+  const pointDestination = allDestinations.find((item) => item.id === destination);
+  const { name, description, pictures } = pointDestination;
   const imageSection = createImageSection(pictures);
 
   const createAllOffers = typeOffers.offers
@@ -114,17 +116,22 @@ export default class EditorPoint extends AbstractStatefulView {
 
   constructor({point, typeOffers, pointDestination, allOffers, allDestinations, onFormSubmit, onEditRollUp}) {
     super();
-    this._setState(EditorPoint.parsePointToState(point, pointDestination, typeOffers));
+    this._setState(EditorPoint.parsePointToState(point, pointDestination.id, typeOffers));
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleEditRollUp = onEditRollUp;
-
     this._restoreHandlers();
   }
 
   get template() {
     return createEditorPointTemplate(this._state, this.#allDestinations);
+  }
+
+  reset(point) {
+    this.updateElement({
+      ...point,
+    });
   }
 
   _restoreHandlers() {
@@ -170,9 +177,6 @@ export default class EditorPoint extends AbstractStatefulView {
     const newDestination = this.#allDestinations.find((item) => item.name === targetDestination);
     this.updateElement({
       destination: newDestination.id,
-      description: newDestination.description,
-      name: newDestination.name,
-      pictures: newDestination.pictures,
     });
   };
 
@@ -195,7 +199,6 @@ export default class EditorPoint extends AbstractStatefulView {
   static parseStateToPoint(state) {
     const point = {...state};
 
-    delete point.destination;
     delete point.typeOffers;
 
     return point;
