@@ -114,8 +114,11 @@ export default class EditorPoint extends AbstractStatefulView {
   #handleFormSubmit = null;
   #handleEditRollUp = null;
 
+  #initialPoint = null;
+
   constructor({point, typeOffers, pointDestination, allOffers, allDestinations, onFormSubmit, onEditRollUp}) {
     super();
+    this.#initialPoint = point;
     this._setState(EditorPoint.parsePointToState(point, pointDestination.id, typeOffers));
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
@@ -128,9 +131,10 @@ export default class EditorPoint extends AbstractStatefulView {
     return createEditorPointTemplate(this._state, this.#allDestinations);
   }
 
-  reset(point) {
+  reset() {
     this.updateElement({
-      ...point,
+      ...this.#initialPoint,
+      typeOffers: this.#allOffers.find((offer) => offer.type === this.#initialPoint.type),
     });
   }
 
@@ -198,12 +202,6 @@ export default class EditorPoint extends AbstractStatefulView {
 
   static parseStateToPoint(state) {
     const point = {...state};
-
-    if (!point.typeOffers) {
-      point.typeOffers = null;
-    }
-
-    delete point.typeOffers;
 
     return point;
   }
