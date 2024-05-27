@@ -177,12 +177,12 @@ export default class EditorPoint extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(EditorPoint.parseStateToPoint(this._state));
+    this.#handleFormSubmit(EditorPoint.parseStateToPoint(this.#initialPoint));
   };
 
   #editRollUpHandler = (evt) => {
     evt.preventDefault();
-    this.#handleEditRollUp(EditorPoint.parseStateToPoint(this._state));
+    this.#handleEditRollUp(EditorPoint.parseStateToPoint(this.#initialPoint));
   };
 
   #dateFromChangeHandler = ([userDate]) => {
