@@ -1,26 +1,31 @@
 import { createImageSection, createOfferItemTemplate, createTypeGroupTemplate } from './editor-form-elements.js';
 import { GROUP_TYPES } from '../constants.js';
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { makeCapitalized } from '../utils/common.js';
 import { humanizePointDueDate, DateFormat } from '../utils/date-format-utils.js';
+import flatpickr from 'flatpickr';
 
-const createEditorPointTemplate = (point, allOffers, pointDestination, allDestinations) => {
-  const { basePrice, type, dateFrom, dateTo } = point;
-  const { name, description, pictures } = pointDestination;
+import 'flatpickr/dist/flatpickr.min.css';
+
+const createEditorPointTemplate = (state, allDestinations) => {
+  const { basePrice, type, dateFrom, dateTo, offers, typeOffers, destination } = state;
 
   const startTime = humanizePointDueDate(dateFrom, DateFormat.FULL_DATE_FORMAT);
   const endTime = humanizePointDueDate(dateTo, DateFormat.FULL_DATE_FORMAT);
 
   const typeName = makeCapitalized(type);
+
+  const pointDestination = allDestinations.find((item) => item.id === destination);
+  const { name, description, pictures } = pointDestination;
   const imageSection = createImageSection(pictures);
 
-  const createAllOffers = allOffers.offers
+  const createAllOffers = typeOffers.offers
     .map((offer) => {
-      const checkedClassName = point.offers.includes(offer.id) ? 'checked' : '';
-      return createOfferItemTemplate(allOffers.type, offer.title, offer.price, offer.id, checkedClassName);
+      const checkedClassName = offers.includes(offer.id) ? 'checked' : '';
+      return createOfferItemTemplate(type, offer.title, offer.price, offer.id, checkedClassName);
     }).join('');
 
-  const createSectionOffers = allOffers.offers.length > 0
+  const createSectionOffers = typeOffers.offers.length > 0
     ? `<section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
@@ -105,42 +110,159 @@ const createEditorPointTemplate = (point, allOffers, pointDestination, allDestin
   );
 };
 
-export default class EditorPoint extends AbstractView {
-  #point = null;
+export default class EditorPoint extends AbstractStatefulView {
   #allOffers = null;
-  #pointDestination = null;
   #allDestinations = [];
-
   #handleFormSubmit = null;
   #handleEditRollUp = null;
+  #initialPoint = null;
+  #datepickerStart = null;
+  #datepickerEnd = null;
 
-  constructor({point, allOffers, pointDestination, allDestinations, onFormSubmit, onEditRollUp}) {
+  constructor({point, typeOffers, pointDestination, allOffers, allDestinations, onFormSubmit, onEditRollUp}) {
     super();
-    this.#point = point;
+    this.#initialPoint = point;
+    this._setState(EditorPoint.parsePointToState(point, pointDestination.id, typeOffers));
     this.#allOffers = allOffers;
-    this.#pointDestination = pointDestination;
     this.#allDestinations = allDestinations;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleEditRollUp = onEditRollUp;
+    this._restoreHandlers();
+  }
 
+  get template() {
+    return createEditorPointTemplate(this._state, this.#allDestinations);
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this.#datepickerStart) {
+      this.#datepickerStart.destroy();
+      this.#datepickerStart = null;
+    }
+
+    if (this.#datepickerEnd) {
+      this.#datepickerEnd.destroy();
+      this.#datepickerEnd = null;
+    }
+  }
+
+  reset() {
+    this.updateElement({
+      ...this.#initialPoint,
+      typeOffers: this.#allOffers.find((offer) => offer.type === this.#initialPoint.type),
+    });
+  }
+
+  _restoreHandlers() {
     this.element.querySelector('form')
       .addEventListener('submit', this.#formSubmitHandler);
 
     this.element.querySelector('.event__rollup-btn')
       .addEventListener('click', this.#editRollUpHandler);
-  }
 
-  get template() {
-    return createEditorPointTemplate(this.#point, this.#allOffers, this.#pointDestination, this.#allDestinations);
+    this.element.querySelector('.event__type-group')
+      .addEventListener('change', this.#typeListChangeHandler);
+
+    this.element.querySelector('.event__input--destination')
+      .addEventListener('change', this.#destinationChangeHandler);
+
+    this.element.querySelector('.event__input--price')
+      .addEventListener('input', this.#priceChangeHandler);
+
+    this.#setDatepickerStart();
+    this.#setDatepickerEnd();
   }
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(this.#point);
+    this.#handleFormSubmit(EditorPoint.parseStateToPoint(this.#initialPoint));
   };
 
   #editRollUpHandler = (evt) => {
     evt.preventDefault();
-    this.#handleEditRollUp(this.#point);
+    this.#handleEditRollUp(EditorPoint.parseStateToPoint(this.#initialPoint));
   };
+
+  #dateFromChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate,
+    });
+  };
+
+  #dateToChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate,
+    });
+  };
+
+  #typeListChangeHandler = (evt) => {
+    evt.preventDefault();
+    const targetType = evt.target.value;
+    const typeOffers = this.#allOffers.find((item) => item.type === targetType);
+    this.updateElement({
+      type: targetType,
+      typeOffers: typeOffers,
+    });
+  };
+
+  #destinationChangeHandler = (evt) => {
+    evt.preventDefault();
+    const targetDestination = evt.target.value;
+    const newDestination = this.#allDestinations.find((item) => item.name === targetDestination);
+    this.updateElement({
+      destination: newDestination.id,
+    });
+  };
+
+  #priceChangeHandler = (evt) => {
+    evt.preventDefault();
+    const newPrice = evt.target.value;
+    this._setState({
+      basePrice: newPrice
+    });
+  };
+
+  #setDatepickerStart() {
+    this.#datepickerStart = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        dateFormat: 'd/m/y H:i',
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._state.dateFrom,
+        onChange: this.#dateFromChangeHandler,
+        maxDate: this._state.dateTo,
+      }
+    );
+  }
+
+  #setDatepickerEnd() {
+    this.#datepickerEnd = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        dateFormat: 'd/m/y H:i',
+        enableTime: true,
+        'time_24hr': true,
+        defaultDate: this._state.dateTo,
+        onChange: this.#dateToChangeHandler,
+        minDate: this._state.dateFrom,
+      }
+    );
+  }
+
+  static parsePointToState(point, pointDestination, typeOffers) {
+    return {
+      ...point,
+      destination: pointDestination,
+      typeOffers
+    };
+  }
+
+  static parseStateToPoint(state) {
+    const point = {...state};
+
+    return point;
+  }
 }
