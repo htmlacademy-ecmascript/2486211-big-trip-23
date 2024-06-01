@@ -2,7 +2,7 @@ import { createImageSection, createOfferItemTemplate, createTypeGroupTemplate } 
 import { GROUP_TYPES } from '../constants.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { makeCapitalized } from '../utils/common.js';
-import { humanizePointDueDate, DateFormat } from '../utils/date-format-utils.js';
+import { humanizePointDueDate, DateFormat } from '../utils/date-format.js';
 import flatpickr from 'flatpickr';
 
 import 'flatpickr/dist/flatpickr.min.css';
@@ -118,8 +118,9 @@ export default class EditorPoint extends AbstractStatefulView {
   #initialPoint = null;
   #datepickerStart = null;
   #datepickerEnd = null;
+  #handleDeleteClick = null;
 
-  constructor({point, typeOffers, pointDestination, allOffers, allDestinations, onFormSubmit, onEditRollUp}) {
+  constructor({point, typeOffers, pointDestination, allOffers, allDestinations, onFormSubmit, onEditRollUp, onDeleteClick}) {
     super();
     this.#initialPoint = point;
     this._setState(EditorPoint.parsePointToState(point, pointDestination.id, typeOffers));
@@ -127,6 +128,7 @@ export default class EditorPoint extends AbstractStatefulView {
     this.#allDestinations = allDestinations;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleEditRollUp = onEditRollUp;
+    this.#handleDeleteClick = onDeleteClick;
     this._restoreHandlers();
   }
 
@@ -170,6 +172,9 @@ export default class EditorPoint extends AbstractStatefulView {
 
     this.element.querySelector('.event__input--price')
       .addEventListener('input', this.#priceChangeHandler);
+
+    this.element.querySelector('.event__reset-btn')
+      .addEventListener('click', this.#formDeleteClickHandler);
 
     this.#setDatepickerStart();
     this.#setDatepickerEnd();
@@ -251,6 +256,11 @@ export default class EditorPoint extends AbstractStatefulView {
       }
     );
   }
+
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(EditorPoint.parseStateToPoint(this.#initialPoint));
+  };
 
   static parsePointToState(point, pointDestination, typeOffers) {
     return {

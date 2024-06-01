@@ -1,5 +1,5 @@
 import { FilterType } from '../constants.js';
-import { isEventOver, isFutureEvent } from './date-format-utils.js';
+import { isEventOver, isFutureEvent } from './date-format.js';
 
 const filter = {
   [FilterType.EVERYTHING]: (points) => points,
