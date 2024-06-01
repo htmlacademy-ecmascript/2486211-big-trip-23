@@ -1,7 +1,7 @@
 import EventsPoint from '../view/events-point.js';
 import EditorPoint from '../view/editor-point.js';
 import { remove, render, replace } from '../framework/render.js';
-import { Mode } from '../constants.js';
+import { Mode, UpdateType, UserAction } from '../constants.js';
 
 export default class PointPresenter {
   #eventsListComponent = null;
@@ -99,7 +99,11 @@ export default class PointPresenter {
   };
 
   #handleFormClick = (point) => {
-    this.#handleDataChange(point);
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
     this.#replaceFormToPoint();
   };
 
@@ -108,6 +112,10 @@ export default class PointPresenter {
   };
 
   #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      {...this.#point, isFavorite: !this.#point.isFavorite},
+    );
   };
 }
