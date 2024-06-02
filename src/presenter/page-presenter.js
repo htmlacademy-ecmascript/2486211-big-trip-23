@@ -107,7 +107,9 @@ export default class PagePresenter {
     this.#pointPresenters.clear();
 
     remove(this.#sorting);
-    remove(this.#listEmpty);
+    if (this.#listEmpty) {
+      remove(this.#listEmpty);
+    }
 
     if (resetSortType) {
       this.#currentSortType = SortType.DAY;
