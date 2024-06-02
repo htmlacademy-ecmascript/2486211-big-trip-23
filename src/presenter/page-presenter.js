@@ -2,40 +2,54 @@ import EventsList from '../view/events-list.js';
 import { remove, render } from '../framework/render.js';
 import Sorting from '../view/sorting.js';
 import Stub from '../view/stub.js';
-import { SortType, StubText, UpdateType, UserAction } from '../constants.js';
+import { FilterType, SortType, UpdateType, UserAction } from '../constants.js';
 import PointPresenter from './point-presenter.js';
 import { sortByDay, sortByPrice, sortByTime } from '../utils/sort.js';
+import { filter } from '../utils/filter.js';
 
 
 export default class PagePresenter {
   #eventsListContainer = null;
+
   #pointsModel = null;
+  #filterModel = null;
+
   #sorting = null;
+  #listEmpty = null;
 
   #pointPresenters = new Map();
   #currentSortType = SortType.DAY;
+  #filterType = FilterType.EVERYTHING;
 
   #eventsListComponent = new EventsList();
-  #listEmpty = new Stub(StubText.EVERYTHING);
 
-  constructor({eventsListContainer, pointsModel}) {
+  constructor({eventsListContainer, pointsModel, filterModel}) {
     this.#eventsListContainer = eventsListContainer;
     this.#pointsModel = pointsModel;
+    this.#filterModel = filterModel;
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
+    this.#filterType = this.#filterModel.filter;
+    const points = this.#pointsModel.points;
+    const filteredPoint = filter[this.#filterType](points);
+
     switch (this.#currentSortType) {
       case 'time':
-        [...this.#pointsModel.points].sort(sortByTime);
+        filteredPoint.sort(sortByTime);
         break;
       case 'price':
-        [...this.#pointsModel.points].sort(sortByPrice);
+        filteredPoint.sort(sortByPrice);
+        break;
+      case 'day':
+        filteredPoint.sort(sortByDay);
         break;
     }
 
-    return [...this.#pointsModel.points].sort(sortByDay);
+    return filteredPoint;
   }
 
   init() {
@@ -58,6 +72,9 @@ export default class PagePresenter {
   }
 
   #renderListEmpty() {
+    this.#listEmpty = new Stub({
+      filterType: this.#filterType
+    });
     render(this.#listEmpty, this.#eventsListContainer);
   }
 
