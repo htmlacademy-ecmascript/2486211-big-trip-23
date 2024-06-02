@@ -4,7 +4,7 @@ const createFilterItemTemplate = (filter, currentFilterType) => {
   const { type, count } = filter;
   return (`
   <div class="trip-filters__filter">
-    <input id="filter-everything"
+    <input id="filter-${type}"
     class="trip-filters__filter-input  visually-hidden"
     type="radio"
     name="trip-filter"

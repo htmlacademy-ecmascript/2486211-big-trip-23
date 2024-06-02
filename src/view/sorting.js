@@ -1,9 +1,12 @@
 import { SortType } from '../constants.js';
 import AbstractView from '../framework/view/abstract-view.js';
+import { makeCapitalized } from '../utils/common.js';
 
 const DISABLED_SORT_TYPES = [SortType.OFFERS, SortType.EVENT];
 
-const createSortingItemTemplate = (type, checkedSortType) => `
+const createSortingItemTemplate = (type, checkedSortType) => {
+  const checkedSort = makeCapitalized(checkedSortType);
+  return (`
   <div class="trip-sort__item  trip-sort__item--${type}">
     <input id="sort-${type}"
     class="trip-sort__input  visually-hidden"
@@ -11,11 +14,12 @@ const createSortingItemTemplate = (type, checkedSortType) => `
     data-sort-type=${type}
     name="trip-sort" value="sort-${type}"
     ${DISABLED_SORT_TYPES.includes(type) ? 'disabled' : ''}
-    ${type === checkedSortType ? 'checked' : ''}
+    ${type === checkedSort ? 'checked' : ''}
     >
     <label class="trip-sort__btn" for="sort-${type}">${type}</label>
   </div>
-`;
+`);
+};
 
 const createSortingTemplate = (checkedSortType) => `
     <form class="trip-events__trip-sort  trip-sort" action="#" method="get">
