@@ -192,7 +192,6 @@ export default class EditorPoint extends AbstractStatefulView {
         'time_24hr': true,
         defaultDate: this._state.dateFrom,
         onChange: this.#dateFromChangeHandler,
-        maxDate: this._state.dateTo,
       }
     );
   }
@@ -225,6 +224,7 @@ export default class EditorPoint extends AbstractStatefulView {
     this._setState({
       dateFrom: userDate,
     });
+    this.#setDatepickerEnd();
   };
 
   #dateToChangeHandler = ([userDate]) => {
