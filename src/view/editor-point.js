@@ -3,8 +3,8 @@ import { DEFAULT_POINT, GROUP_TYPES } from '../constants.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { makeCapitalized } from '../utils/common.js';
 import { humanizePointDueDate, DateFormat } from '../utils/date-format.js';
+import he from 'he';
 import flatpickr from 'flatpickr';
-
 import 'flatpickr/dist/flatpickr.min.css';
 
 const createEditorPointTemplate = (state, allDestinations) => {
@@ -73,7 +73,7 @@ const createEditorPointTemplate = (state, allDestinations) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${typeName}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${pointDestination !== undefined ? pointDestination.name : ''}" list="destination-list-1" required>
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${pointDestination !== undefined ? he.encode(pointDestination.name) : ''}" list="destination-list-1" required>
           <datalist id="destination-list-1">
             ${createDesinationTemplate}
           </datalist>
