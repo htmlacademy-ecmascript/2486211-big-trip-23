@@ -1,9 +1,10 @@
+import NewPointPresenter from './new-point-presenter.js';
+import PointPresenter from './point-presenter.js';
 import EventsList from '../view/events-list.js';
-import { remove, render } from '../framework/render.js';
 import Sorting from '../view/sorting.js';
 import Stub from '../view/stub.js';
+import { remove, render } from '../framework/render.js';
 import { FilterType, SortType, UpdateType, UserAction } from '../constants.js';
-import PointPresenter from './point-presenter.js';
 import { sortByDay, sortByPrice, sortByTime } from '../utils/sort.js';
 import { filter } from '../utils/filter.js';
 
@@ -18,15 +19,23 @@ export default class PagePresenter {
   #listEmpty = null;
 
   #pointPresenters = new Map();
+  #newPointPresenter = null;
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
 
   #eventsListComponent = new EventsList();
 
-  constructor({eventsListContainer, pointsModel, filterModel}) {
+  constructor({eventsListContainer, pointsModel, filterModel, onNewPointDestroy}) {
     this.#eventsListContainer = eventsListContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+
+    this.#newPointPresenter = new NewPointPresenter({
+      eventListContainer: this.#eventsListComponent.element,
+      pointsModel: this.#pointsModel,
+      onDataChange: this.#handleViewAction,
+      onDestroy: onNewPointDestroy
+    });
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -54,6 +63,17 @@ export default class PagePresenter {
 
   init() {
     this.#renderPage();
+  }
+
+  createPoint() {
+    if (this.#listEmpty) {
+      remove(this.#listEmpty);
+    }
+
+    this.#currentSortType = SortType.DAY;
+    this.#filterType = FilterType.EVERYTHING;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newPointPresenter.init();
   }
 
   #renderPoint(point) {
@@ -102,7 +122,7 @@ export default class PagePresenter {
   }
 
   #clearPage({resetSortType = false} = {}) {
-
+    this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
 
@@ -117,6 +137,7 @@ export default class PagePresenter {
   }
 
   #handleModeChange = () => {
+    this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
