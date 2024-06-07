@@ -1,5 +1,10 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
 
 /** @enum {number} Перечисление разных единиц времени в милисекундах */
 const TimeInMilliseconds = {
@@ -25,11 +30,11 @@ const DateFormat = {
  */
 const humanizePointDueDate = (dueDate, dateFormat) => dueDate ? dayjs(dueDate).format(dateFormat) : '';
 
-const isEventOver = (dueDate) => dueDate && dayjs(dueDate).isBefore(dayjs(new Date(), 'D'));
+const isEventOver = (dueDate) => dueDate && dayjs(dueDate).isBefore(dayjs(new Date() - TimeInMilliseconds.DAY));
 
-const isFutureEvent = (dueDate) => dueDate && dayjs(dueDate).isAfter(dayjs(new Date(), 'D'));
+const isFutureEvent = (dueDate) => dueDate && dayjs(dueDate).isAfter(dayjs(new Date() + TimeInMilliseconds.DAY));
 
-const isEventToday = (dueDate) => dueDate && dayjs(dueDate).isSame(dayjs(), 'D');
+const isPresentEvent = (dateFrom, dateTo) => dayjs(dateFrom).isSameOrBefore(dayjs(), 'D') && dayjs(dateTo).isSameOrAfter(dayjs(), 'D');
 
 dayjs.extend(duration);
 
@@ -84,4 +89,4 @@ const getDuration = (dateFrom, dateTo) => {
   }
 };
 
-export { humanizePointDueDate, getDuration, DateFormat, isEventOver, isFutureEvent, isEventToday};
+export { humanizePointDueDate, getDuration, DateFormat, isEventOver, isFutureEvent, isPresentEvent};
