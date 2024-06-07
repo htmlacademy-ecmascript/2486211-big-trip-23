@@ -25,13 +25,11 @@ const DateFormat = {
  */
 const humanizePointDueDate = (dueDate, dateFormat) => dueDate ? dayjs(dueDate).format(dateFormat) : '';
 
-const isEventOver = (dueDate) => dueDate && dayjs(dueDate).isBefore(dayjs(new Date(), 'D'));
+const isEventOver = (dueDate) => dueDate && dayjs(dueDate).isBefore(dayjs(new Date() - TimeInMilliseconds.DAY));
 
-const isFutureEvent = (dueDate) => dueDate && dayjs(dueDate).isAfter(dayjs(new Date(), 'D'));
+const isFutureEvent = (dueDate) => dueDate && dayjs(dueDate).isAfter(dayjs(new Date() + TimeInMilliseconds.DAY));
 
 const isEventToday = (dueDate) => dueDate && dayjs(dueDate).isSame(dayjs(), 'D');
-
-const isDatesSame = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
 
 dayjs.extend(duration);
 
@@ -86,4 +84,4 @@ const getDuration = (dateFrom, dateTo) => {
   }
 };
 
-export { humanizePointDueDate, getDuration, DateFormat, isEventOver, isFutureEvent, isEventToday, isDatesSame};
+export { humanizePointDueDate, getDuration, DateFormat, isEventOver, isFutureEvent, isEventToday};

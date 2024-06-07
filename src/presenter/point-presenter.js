@@ -2,7 +2,6 @@ import EventsPoint from '../view/events-point.js';
 import EditorPoint from '../view/editor-point.js';
 import { remove, render, replace } from '../framework/render.js';
 import { Mode, UpdateType, UserAction } from '../constants.js';
-import { isDatesSame } from '../utils/date-format.js';
 
 export default class PointPresenter {
   #eventsListComponent = null;
@@ -101,12 +100,9 @@ export default class PointPresenter {
   };
 
   #handleFormClick = (update) => {
-    const isPatchUpdate = isDatesSame(this.#point.dateFrom, update.dateFrom) &&
-    isDatesSame(this.#point.dateTo, update.dateTo);
-
     this.#handleDataChange(
       UserAction.UPDATE_POINT,
-      isPatchUpdate ? UpdateType.PATCH : UpdateType.MINOR,
+      UpdateType.MINOR,
       update,
     );
     this.#replaceFormToPoint();
