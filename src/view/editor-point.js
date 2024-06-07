@@ -45,7 +45,7 @@ const createEditorPointTemplate = (state, allDestinations) => {
 
   const createTypeList = GROUP_TYPES
     .map((group) => {
-      const checkedClassName = group === typeName ? 'checked' : '';
+      const checkedClassName = group === type ? 'checked' : '';
       const groupName = makeCapitalized(group);
       return createTypeGroupTemplate(groupName, checkedClassName);
     }).join('');

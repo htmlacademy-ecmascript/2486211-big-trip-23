@@ -1,6 +1,6 @@
 import EditorPoint from '../view/editor-point.js';
 import { RenderPosition, remove, render } from '../framework/render.js';
-import { DEFAULT_POINT, UpdateType, UserAction } from '../constants.js';
+import { DEFAULT_POINT, GROUP_TYPES, UpdateType, UserAction } from '../constants.js';
 import { nanoid } from 'nanoid';
 
 export default class NewPointPresenter {
@@ -10,6 +10,7 @@ export default class NewPointPresenter {
   #handleDataChange = null;
   #handleDestroy = null;
   #editorComponent = null;
+  #defaultType = GROUP_TYPES[5];
 
   constructor({eventListContainer, pointsModel, onDataChange, onDestroy}) {
     this.#eventListContainer = eventListContainer;
@@ -24,7 +25,7 @@ export default class NewPointPresenter {
     }
     this.#editorComponent = new EditorPoint({
       point: this.#point,
-      typeOffers: this.#pointsModel.getOffersByType('flight'),
+      typeOffers: this.#pointsModel.getOffersByType(this.#defaultType),
       pointDestination: this.#pointsModel.getDestinationsById(this.#point.destination),
       allOffers: this.#pointsModel.offers,
       allDestinations: this.#pointsModel.destinations,

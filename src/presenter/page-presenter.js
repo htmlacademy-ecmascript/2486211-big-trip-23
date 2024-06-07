@@ -47,13 +47,13 @@ export default class PagePresenter {
     const filteredPoint = filter[this.#filterType](points);
 
     switch (this.#currentSortType) {
-      case 'time':
+      case SortType.TIME:
         filteredPoint.sort(sortByTime);
         break;
-      case 'price':
+      case SortType.PRICE:
         filteredPoint.sort(sortByPrice);
         break;
-      case 'day':
+      case SortType.DAY:
         filteredPoint.sort(sortByDay);
         break;
     }
