@@ -24,7 +24,7 @@ export default class PointsApiService extends ApiService {
       .then(ApiService.parseResponse);
   }
 
-  async updateTask(point) {
+  async updatePoint(point) {
     const response = await this._load({
       url: `points/${point.id}`,
       method: Method.PUT,
