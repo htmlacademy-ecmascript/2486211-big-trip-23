@@ -212,10 +212,19 @@ export default class EditorPoint extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    if (this._state.dateTo > this._state.dateFrom) {
-      this.#handleFormSubmit(EditorPoint.parseStateToPoint(this._state));
+    if (this._state.dateFrom === null) {
+      this.element.querySelector('#event-start-time-1').setAttribute('style', 'border: 1px solid red; border-radius: 3px');
+      return;
     }
-    this.element.querySelector('#event-end-time-1').setAttribute('style', 'color: red');
+    if (this._state.dateTo === null) {
+      this.element.querySelector('#event-end-time-1').setAttribute('style', 'border: 1px solid red; border-radius: 3px');
+      return;
+    }
+    if (this._state.dateTo < this._state.dateFrom) {
+      this.element.querySelector('#event-end-time-1').setAttribute('style', 'color: red');
+      return;
+    }
+    this.#handleFormSubmit(EditorPoint.parseStateToPoint(this._state));
   };
 
   #editRollUpHandler = (evt) => {
