@@ -80,7 +80,7 @@ export default class EventsPoint extends AbstractView {
     this.#handleFavoriteClick = onFavoriteClick;
 
     this.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#editClickHandler);
+      .addEventListener('click', this.#editButtonClickHandler);
 
     this.element.querySelector('.event__favorite-btn')
       .addEventListener('click', this.#favoriteClickHandler);
@@ -90,7 +90,7 @@ export default class EventsPoint extends AbstractView {
     return createEventPointTemplate(this.#point, this.#offers, this.#destination);
   }
 
-  #editClickHandler = (evt) => {
+  #editButtonClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleEditClick();
   };

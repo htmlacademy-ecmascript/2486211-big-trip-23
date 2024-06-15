@@ -1,5 +1,5 @@
-import { createImageSection, createOfferItemTemplate, createTypeGroupTemplate } from './editor-form-elements.js';
-import { DEFAULT_POINT, GROUP_TYPES } from '../constants.js';
+import { createImageSection, createOfferItemTemplate, createTypeGroupTemplate, setButtonName } from './editor-form-elements.js';
+import { GROUP_TYPES } from '../constants.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { makeCapitalized } from '../utils/common.js';
 import { humanizePointDueDate, DateFormat } from '../utils/date-format.js';
@@ -7,8 +7,13 @@ import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
+const ValidationStyle = {
+  FOR_BORDER: 'border: 1px solid red; border-radius: 3px',
+  FOR_TEXT_COLOR: 'color: red',
+};
+
 const createEditorPointTemplate = (state, allDestinations) => {
-  const { id, basePrice, type, dateFrom, dateTo, offers, typeOffers, destination } = state;
+  const { id, basePrice, type, dateFrom, dateTo, offers, typeOffers, destination, isDisabled, isSaving, isDeleting } = state;
 
   const startTime = humanizePointDueDate(dateFrom, DateFormat.FULL_DATE_FORMAT);
   const endTime = humanizePointDueDate(dateTo, DateFormat.FULL_DATE_FORMAT);
@@ -16,6 +21,7 @@ const createEditorPointTemplate = (state, allDestinations) => {
   const typeName = makeCapitalized(type);
 
   const pointDestination = allDestinations.find((item) => item.id === destination);
+  const isDestinationExist = () => pointDestination && pointDestination.description !== '';
 
   const createAllOffers = typeOffers.offers
     .map((offer) => {
@@ -23,7 +29,14 @@ const createEditorPointTemplate = (state, allDestinations) => {
       return createOfferItemTemplate(type, offer.title, offer.price, offer.id, checkedClassName);
     }).join('');
 
-  const createSectionOffers = typeOffers !== undefined && typeOffers.offers.length > 0
+  const createTypeList = GROUP_TYPES
+    .map((group) => {
+      const checkedClassName = group === type ? 'checked' : '';
+      const groupName = makeCapitalized(group);
+      return createTypeGroupTemplate(groupName, checkedClassName);
+    }).join('');
+
+  const createSectionOffers = typeOffers && typeOffers.offers.length > 0
     ? `<section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
@@ -34,21 +47,20 @@ const createEditorPointTemplate = (state, allDestinations) => {
     `
     : '';
 
-  const createSecionDestination = pointDestination !== undefined ? `<section class="event__section  event__section--destination">
-      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${pointDestination.description}</p>
-      ${createImageSection(pointDestination.pictures)}
-    </section>` : '';
+  const createSecionDestination = isDestinationExist()
+    ? `<section class="event__section  event__section--destination">
+        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+        <p class="event__destination-description">${pointDestination.description}</p>
+        ${createImageSection(pointDestination.pictures)}
+      </section>` : '';
 
   const createDesinationTemplate = allDestinations
     .map((item) => `<option value="${item.name}"></option>`).join('');
 
-  const createTypeList = GROUP_TYPES
-    .map((group) => {
-      const checkedClassName = group === type ? 'checked' : '';
-      const groupName = makeCapitalized(group);
-      return createTypeGroupTemplate(groupName, checkedClassName);
-    }).join('');
+  const createButtonRollUp = id
+    ? `<button class="event__rollup-btn" type="button">
+        <span class="visually-hidden">Open event</span>
+      </button>` : '';
 
   return (
     `<li class="trip-events__item">
@@ -59,7 +71,7 @@ const createEditorPointTemplate = (state, allDestinations) => {
             <span class="visually-hidden">Choose event type</span>
             <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
-          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+          <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
@@ -73,7 +85,7 @@ const createEditorPointTemplate = (state, allDestinations) => {
           <label class="event__label  event__type-output" for="event-destination-1">
             ${typeName}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${pointDestination !== undefined ? he.encode(pointDestination.name) : ''}" list="destination-list-1" required>
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${pointDestination !== undefined ? he.encode(pointDestination.name) : ''}" list="destination-list-1" required ${isDisabled ? 'disabled' : ''}>
           <datalist id="destination-list-1">
             ${createDesinationTemplate}
           </datalist>
@@ -81,10 +93,10 @@ const createEditorPointTemplate = (state, allDestinations) => {
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startTime}" ${isDisabled ? 'disabled' : ''}>
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endTime}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endTime}" ${isDisabled ? 'disabled' : ''}>
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -92,14 +104,12 @@ const createEditorPointTemplate = (state, allDestinations) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" min="1" max="10000" step="1" value="${basePrice}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" min="1" max="10000" step="1" value="${basePrice}" ${isDisabled ? 'disabled' : ''}>
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">${id === DEFAULT_POINT.id ? 'Cancel' : 'Delete'}</button>
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
-        </button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaving ? 'disabled' : ''}>${isSaving ? 'Saving' : 'Save'}</button>
+        <button class="event__reset-btn" type="reset" ${isDeleting ? 'disabled' : ''}>${setButtonName(id, isDeleting)}</button>
+        ${createButtonRollUp}
       </header>
       <section class="event__details">
         ${createSectionOffers}
@@ -162,7 +172,7 @@ export default class EditorPoint extends AbstractStatefulView {
       .addEventListener('submit', this.#formSubmitHandler);
 
     this.element.querySelector('.event__rollup-btn')
-      .addEventListener('click', this.#editRollUpHandler);
+      ?.addEventListener('click', this.#rollUpButtonClickHandler);
 
     this.element.querySelector('.event__type-group')
       .addEventListener('change', this.#typeListChangeHandler);
@@ -212,13 +222,31 @@ export default class EditorPoint extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    if (this._state.dateTo > this._state.dateFrom) {
-      this.#handleFormSubmit(EditorPoint.parseStateToPoint(this._state));
+
+    const inputStartTime = this.element.querySelector('#event-start-time-1');
+    const inputEndTime = this.element.querySelector('#event-end-time-1');
+    const inputDestination = this.element.querySelector('#event-destination-1');
+
+    if (this._state.dateFrom === null) {
+      inputStartTime.setAttribute('style', ValidationStyle.FOR_BORDER);
+      return;
     }
-    this.element.querySelector('#event-end-time-1').setAttribute('style', 'color: red');
+    if (this._state.dateTo === null) {
+      inputEndTime.setAttribute('style', ValidationStyle.FOR_BORDER);
+      return;
+    }
+    if (this._state.dateTo < this._state.dateFrom) {
+      inputEndTime.setAttribute('style', ValidationStyle.FOR_TEXT_COLOR);
+      return;
+    }
+    if(!this._state.destination) {
+      inputDestination.setAttribute('style', ValidationStyle.FOR_BORDER);
+      return;
+    }
+    this.#handleFormSubmit(EditorPoint.parseStateToPoint(this._state));
   };
 
-  #editRollUpHandler = (evt) => {
+  #rollUpButtonClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleEditRollUp(EditorPoint.parseStateToPoint(this.#initialPoint));
   };
@@ -249,7 +277,11 @@ export default class EditorPoint extends AbstractStatefulView {
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
     const targetDestination = evt.target.value;
-    const newDestination = this.#allDestinations.find((item) => item.name === targetDestination);
+    const newDestination = this.#allDestinations.find((destination) => destination.name === targetDestination);
+    if(!newDestination) {
+      this.element.querySelector('#event-destination-1').setAttribute('style', ValidationStyle.FOR_BORDER);
+      return;
+    }
     this.updateElement({
       destination: newDestination.id,
     });
@@ -259,7 +291,7 @@ export default class EditorPoint extends AbstractStatefulView {
     evt.preventDefault();
     const newPrice = evt.target.value;
     this._setState({
-      basePrice: newPrice
+      basePrice: parseInt(newPrice, 10),
     });
   };
 
@@ -280,7 +312,10 @@ export default class EditorPoint extends AbstractStatefulView {
     return {
       ...point,
       destination: pointDestination,
-      typeOffers
+      typeOffers,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
     };
   }
 
@@ -290,6 +325,10 @@ export default class EditorPoint extends AbstractStatefulView {
     if (point.typeOffers) {
       delete point.typeOffers;
     }
+
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
 
     return point;
   }

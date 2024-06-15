@@ -1,6 +1,14 @@
-import dayjs from 'dayjs';
-
 const GROUP_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+
+const DEFAULT_POINT = {
+  basePrice: '0',
+  dateFrom: null,
+  dateTo: null,
+  destination: '0',
+  isFavorite: false,
+  offers: [],
+  type: GROUP_TYPES[5]
+};
 
 const SortType = {
   DAY: 'day',
@@ -44,15 +52,9 @@ const UpdateType = {
   INIT: 'INIT',
 };
 
-const DEFAULT_POINT = {
-  id: 0,
-  basePrice: '0',
-  dateFrom: dayjs(new Date()).toISOString(),
-  dateTo: dayjs(new Date()).toISOString(),
-  destination: '0',
-  isFavorite: false,
-  offers: [],
-  type: GROUP_TYPES[5]
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
 };
 
-export { GROUP_TYPES, StubText, FilterType, Mode, SortType, UserAction, UpdateType, DEFAULT_POINT};
+export { GROUP_TYPES, StubText, FilterType, Mode, SortType, UserAction, UpdateType, DEFAULT_POINT, TimeLimit};

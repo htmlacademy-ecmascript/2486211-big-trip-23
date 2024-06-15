@@ -27,4 +27,11 @@ const createImageSection = (pictures) => `
   </div>
   `;
 
-export { createOfferItemTemplate, createTypeGroupTemplate, createImageSection };
+const setButtonName = (id, isDeleting) => {
+  if (!id) {
+    return 'Cancel';
+  }
+  return isDeleting ? 'Deleting...' : 'Delete';
+};
+
+export { createOfferItemTemplate, createTypeGroupTemplate, createImageSection, setButtonName };
