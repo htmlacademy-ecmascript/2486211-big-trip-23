@@ -7,6 +7,11 @@ import he from 'he';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
+const ValidationStyle = {
+  FOR_BORDER: 'border: 1px solid red; border-radius: 3px',
+  FOR_TEXT_COLOR: 'color: red',
+};
+
 const createEditorPointTemplate = (state, allDestinations) => {
   const { id, basePrice, type, dateFrom, dateTo, offers, typeOffers, destination } = state;
 
@@ -16,6 +21,7 @@ const createEditorPointTemplate = (state, allDestinations) => {
   const typeName = makeCapitalized(type);
 
   const pointDestination = allDestinations.find((item) => item.id === destination);
+  const isDestinationExist = () => pointDestination !== undefined && pointDestination.description !== '';
 
   const createAllOffers = typeOffers.offers
     .map((offer) => {
@@ -34,7 +40,7 @@ const createEditorPointTemplate = (state, allDestinations) => {
     `
     : '';
 
-  const createSecionDestination = pointDestination !== undefined && pointDestination.description !== '' ? `<section class="event__section  event__section--destination">
+  const createSecionDestination = isDestinationExist() ? `<section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${pointDestination.description}</p>
       ${createImageSection(pointDestination.pictures)}
@@ -213,15 +219,19 @@ export default class EditorPoint extends AbstractStatefulView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     if (this._state.dateFrom === null) {
-      this.element.querySelector('#event-start-time-1').setAttribute('style', 'border: 1px solid red; border-radius: 3px');
+      this.element.querySelector('#event-start-time-1').setAttribute('style', ValidationStyle.FOR_BORDER);
       return;
     }
     if (this._state.dateTo === null) {
-      this.element.querySelector('#event-end-time-1').setAttribute('style', 'border: 1px solid red; border-radius: 3px');
+      this.element.querySelector('#event-end-time-1').setAttribute('style', ValidationStyle.FOR_BORDER);
       return;
     }
     if (this._state.dateTo < this._state.dateFrom) {
-      this.element.querySelector('#event-end-time-1').setAttribute('style', 'color: red');
+      this.element.querySelector('#event-end-time-1').setAttribute('style', ValidationStyle.FOR_TEXT_COLOR);
+      return;
+    }
+    if(!this._state.destination) {
+      this.element.querySelector('#event-destination-1').setAttribute('style', ValidationStyle.FOR_BORDER);
       return;
     }
     this.#handleFormSubmit(EditorPoint.parseStateToPoint(this._state));
@@ -258,7 +268,11 @@ export default class EditorPoint extends AbstractStatefulView {
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
     const targetDestination = evt.target.value;
-    const newDestination = this.#allDestinations.find((item) => item.name === targetDestination);
+    const newDestination = this.#allDestinations.find((destination) => destination.name === targetDestination);
+    if(!newDestination) {
+      this.element.querySelector('#event-destination-1').setAttribute('style', ValidationStyle.FOR_BORDER);
+      return;
+    }
     this.updateElement({
       destination: newDestination.id,
     });
@@ -268,7 +282,7 @@ export default class EditorPoint extends AbstractStatefulView {
     evt.preventDefault();
     const newPrice = evt.target.value;
     this._setState({
-      basePrice: newPrice
+      basePrice: parseInt(newPrice, 10),
     });
   };
 

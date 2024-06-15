@@ -43,7 +43,6 @@ const UpdateType = {
 };
 
 const DEFAULT_POINT = {
-  id: 0,
   basePrice: '0',
   dateFrom: null,
   dateTo: null,
