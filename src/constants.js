@@ -1,5 +1,15 @@
 const GROUP_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
+const DEFAULT_POINT = {
+  basePrice: '0',
+  dateFrom: null,
+  dateTo: null,
+  destination: '0',
+  isFavorite: false,
+  offers: [],
+  type: GROUP_TYPES[5]
+};
+
 const SortType = {
   DAY: 'day',
   EVENT: 'event',
@@ -40,16 +50,6 @@ const UpdateType = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
   INIT: 'INIT',
-};
-
-const DEFAULT_POINT = {
-  basePrice: '0',
-  dateFrom: null,
-  dateTo: null,
-  destination: '0',
-  isFavorite: false,
-  offers: [],
-  type: GROUP_TYPES[5]
 };
 
 const TimeLimit = {

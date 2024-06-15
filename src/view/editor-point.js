@@ -21,7 +21,7 @@ const createEditorPointTemplate = (state, allDestinations) => {
   const typeName = makeCapitalized(type);
 
   const pointDestination = allDestinations.find((item) => item.id === destination);
-  const isDestinationExist = () => pointDestination !== undefined && pointDestination.description !== '';
+  const isDestinationExist = () => pointDestination && pointDestination.description !== '';
 
   const createAllOffers = typeOffers.offers
     .map((offer) => {
@@ -36,7 +36,7 @@ const createEditorPointTemplate = (state, allDestinations) => {
       return createTypeGroupTemplate(groupName, checkedClassName);
     }).join('');
 
-  const createSectionOffers = typeOffers !== undefined && typeOffers.offers.length > 0
+  const createSectionOffers = typeOffers && typeOffers.offers.length > 0
     ? `<section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
@@ -172,7 +172,7 @@ export default class EditorPoint extends AbstractStatefulView {
       .addEventListener('submit', this.#formSubmitHandler);
 
     this.element.querySelector('.event__rollup-btn')
-      ?.addEventListener('click', this.#editRollUpHandler);
+      ?.addEventListener('click', this.#rollUpButtonClickHandler);
 
     this.element.querySelector('.event__type-group')
       .addEventListener('change', this.#typeListChangeHandler);
@@ -222,26 +222,31 @@ export default class EditorPoint extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
+
+    const inputStartTime = this.element.querySelector('#event-start-time-1');
+    const inputEndTime = this.element.querySelector('#event-end-time-1');
+    const inputDestination = this.element.querySelector('#event-destination-1');
+
     if (this._state.dateFrom === null) {
-      this.element.querySelector('#event-start-time-1').setAttribute('style', ValidationStyle.FOR_BORDER);
+      inputStartTime.setAttribute('style', ValidationStyle.FOR_BORDER);
       return;
     }
     if (this._state.dateTo === null) {
-      this.element.querySelector('#event-end-time-1').setAttribute('style', ValidationStyle.FOR_BORDER);
+      inputEndTime.setAttribute('style', ValidationStyle.FOR_BORDER);
       return;
     }
     if (this._state.dateTo < this._state.dateFrom) {
-      this.element.querySelector('#event-end-time-1').setAttribute('style', ValidationStyle.FOR_TEXT_COLOR);
+      inputEndTime.setAttribute('style', ValidationStyle.FOR_TEXT_COLOR);
       return;
     }
     if(!this._state.destination) {
-      this.element.querySelector('#event-destination-1').setAttribute('style', ValidationStyle.FOR_BORDER);
+      inputDestination.setAttribute('style', ValidationStyle.FOR_BORDER);
       return;
     }
     this.#handleFormSubmit(EditorPoint.parseStateToPoint(this._state));
   };
 
-  #editRollUpHandler = (evt) => {
+  #rollUpButtonClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleEditRollUp(EditorPoint.parseStateToPoint(this.#initialPoint));
   };
