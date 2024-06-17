@@ -42,7 +42,8 @@ export default class PagePresenter {
       eventListContainer: this.#eventsListComponent.element,
       pointsModel: this.#pointsModel,
       onDataChange: this.#handleViewAction,
-      onDestroy: onNewPointDestroy
+      onDestroy: onNewPointDestroy,
+      onReset: this.#handleFormReset,
     });
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
@@ -133,7 +134,7 @@ export default class PagePresenter {
       return;
     }
 
-    if (this.points.length === 0) {
+    if (this.#listEmpty === null && this.points.length === 0) {
       this.#renderListEmpty();
       return;
     }
@@ -157,6 +158,13 @@ export default class PagePresenter {
       this.#currentSortType = SortType.DAY;
     }
   }
+
+  #handleFormReset = () => {
+    if (this.points.length === 0) {
+      remove(this.#sorting);
+      this.#renderListEmpty();
+    }
+  };
 
   #handleModeChange = () => {
     this.#newPointPresenter.destroy();
