@@ -6,6 +6,7 @@ export default class PointsModel extends Observable {
   #points = [];
   #destinations = [];
   #offers = [];
+  #isLoadingError = false;
 
   #pointsApiService = null;
   #pointsAdapterService = new AdapterService();
@@ -27,6 +28,10 @@ export default class PointsModel extends Observable {
     return this.#offers;
   }
 
+  get error() {
+    return this.#isLoadingError;
+  }
+
   async init() {
     try {
       const points = await this.#pointsApiService.points;
@@ -38,6 +43,7 @@ export default class PointsModel extends Observable {
       this.#points = [];
       this.#offers = [];
       this.#destinations = [];
+      this.#isLoadingError = true;
     }
 
     this._notify(UpdateType.INIT);
