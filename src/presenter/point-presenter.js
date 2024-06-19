@@ -44,7 +44,7 @@ export default class PointPresenter {
       allOffers: this.#pointsModel.offers,
       allDestinations: this.#pointsModel.destinations,
       onFormSubmit: this.#handleFormClick,
-      onEditRollUp: this.#handleFormClick,
+      onEditRollUp: this.#handleEditRollUp,
       onDeleteClick: this.#handleDeleteClick,
     });
 
@@ -141,6 +141,10 @@ export default class PointPresenter {
       UpdateType.MINOR,
       update,
     );
+  };
+
+  #handleEditRollUp = () => {
+    this.#replaceFormToPoint();
   };
 
   #handleEditClick = () => {
