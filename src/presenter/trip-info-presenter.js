@@ -1,3 +1,4 @@
+import { MAX_COUNT_DESTINATIONS } from '../constants.js';
 import { RenderPosition, remove, render } from '../framework/render.js';
 import { sortByDay } from '../utils/sort.js';
 import TripInfo from '../view/trip-info.js';
@@ -23,12 +24,12 @@ export default class TripInfoPresenter {
     const allDestinations = this.#pointsModel.destinations;
     this.#destinations = this.#sortedPoints.map((point) => allDestinations.find((item) => item.id === point.destination));
     this.#destinationsName = this.#destinations.map((destination) => destination.name);
-    if (this.#destinations.length > 3) {
+    if (this.#destinations.length > MAX_COUNT_DESTINATIONS) {
       this.#destinationsName = [
         this.#destinationsName[0],
         this.#destinationsName[this.#destinationsName.length - 1],
       ];
-    } else if (this.#destinations.length === 3) {
+    } else if (this.#destinations.length === MAX_COUNT_DESTINATIONS) {
       this.#destinationsName = [
         this.#destinationsName[0],
         this.#destinationsName[1],

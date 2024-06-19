@@ -1,3 +1,5 @@
+const MAX_COUNT_DESTINATIONS = 3;
+
 const GROUP_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 const DEFAULT_POINT = {
@@ -57,4 +59,4 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
-export { GROUP_TYPES, StubText, FilterType, Mode, SortType, UserAction, UpdateType, DEFAULT_POINT, TimeLimit};
+export { GROUP_TYPES, StubText, FilterType, Mode, SortType, UserAction, UpdateType, DEFAULT_POINT, TimeLimit, MAX_COUNT_DESTINATIONS};
