@@ -40,22 +40,34 @@ export default class TripInfoPresenter {
   }
 
   get dates() {
-
-    this.#tripDates = [
-      this.#sortedPoints[0].dateFrom,
-      this.#sortedPoints[this.#sortedPoints.length - 1].dateTo,
-    ];
+    if (this.#sortedPoints.length > 2) {
+      this.#tripDates = [
+        this.#sortedPoints[0].dateFrom,
+        this.#sortedPoints[this.#sortedPoints.length - 1].dateTo,
+      ];
+    } else if (this.#sortedPoints.length === 1) {
+      this.#tripDates = [
+        this.#sortedPoints[0].dateFrom,
+        this.#sortedPoints[0].dateTo,
+      ];
+    } else if (this.#sortedPoints.length === 0 || !this.#sortedPoints) {
+      this.#tripDates = [];
+    }
     return this.#tripDates;
   }
 
   get cost() {
-    const costPoints = this.#sortedPoints.map((point) => {
-      const offersPoint = this.#pointsModel.getOffersById(point.type, point.offers);
-      const priceOffers = offersPoint.map((offer) => offer.price);
-      const cost = priceOffers.reduce((previousValue, currentValue) => previousValue + currentValue, point.basePrice);
-      return cost;
-    });
-    this.#cost = costPoints.reduce((previousValue, currentValue) => previousValue + currentValue);
+    if (this.#sortedPoints) {
+      const costPoints = this.#sortedPoints.map((point) => {
+        const offersPoint = this.#pointsModel.getOffersById(point.type, point.offers);
+        const priceOffers = offersPoint.map((offer) => offer.price);
+        const cost = priceOffers.reduce((previousValue, currentValue) => previousValue + currentValue, point.basePrice);
+        return cost;
+      });
+      this.#cost = costPoints.reduce((previousValue, currentValue) => previousValue + currentValue, 0);
+    } else if (this.#sortedPoints.length === 0) {
+      this.#cost = null;
+    }
     return this.#cost;
   }
 
