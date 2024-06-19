@@ -14,7 +14,8 @@ const TimeInMilliseconds = {
 
 /** @enum {string} Перечисление форматов отображения дат из библиотеки dayjs */
 const DateFormat = {
-  DATE_FROM_FORMAT: 'MMM D', // Сокращенное название месяца, день месяца(двухзначное число)
+  DATE_FOR_TRIP_INFO: 'D MMM', // Lень месяца, cокращенное название месяца(для шапки страницы)
+  DATE_FROM_FORMAT: 'MMM D', // Сокращенное название месяца, день месяца
   TIME_FORMAT: 'HH:mm', // Час(двухзначное число), минута(двухзначное число)
   FULL_DATE_FORMAT: 'DD/MM/YY HH:mm', // 01.01.24 01:01
   // Формат продолжительности нахождения в точке маршрута зависит от длительности
@@ -63,6 +64,9 @@ const getDuration = (dateFrom, dateTo) => {
   /** @const {number} значение свойства с длительностью времени в месяцах */
   const countMonths = $d.months;
 
+  /** @const {number} значение свойства с длительностью времени в годах */
+  const countYears = $d.years;
+
   /** если true, тогда сделаем "конвертацию" - переведем месяца в дни */
   if (countMonths > 0) {
 
@@ -70,21 +74,27 @@ const getDuration = (dateFrom, dateTo) => {
      * @const {object} объект, в метод .duration передаем количество месяцев,
      * которые в данном объекте будут представлены в милисекундах
      */
-    const monthsInMil = dayjs.duration(countMonths, 'month');
+    const monthsInMilliseconds = dayjs.duration(countMonths, 'month');
 
     /**
      * перезаписывает значение свойства объекта продолжительности,
      * получает продолжительность времени, измеряемую в днях, здесь .duration может принимать аргументом только милисекунды
      */
-    $d.days += dayjs.duration(monthsInMil.$ms).asDays();
+    $d.days += dayjs.duration(monthsInMilliseconds.$ms).asDays();
   }
+
+  if (countYears > 0) {
+    const yearsInMilliseconds = dayjs.duration(countYears, 'year');
+    $d.days += dayjs.duration(yearsInMilliseconds.$ms).asDays();
+  }
+
   /** Если true, конструкция вернет {string} - Формат продолжительности нахождения в точке маршрута в зависимости от длительности */
   switch (true) {
     case durationInMilliseconds < TimeInMilliseconds.HOUR:
       return durationInUnits.format(DateFormat.MINUTES_FORMAT);
     case durationInMilliseconds > TimeInMilliseconds.HOUR && durationInMilliseconds < TimeInMilliseconds.DAY:
       return durationInUnits.format(DateFormat.DAY_FORMAT);
-    case durationInMilliseconds > TimeInMilliseconds.DAY:
+    case durationInMilliseconds >= TimeInMilliseconds.DAY:
       return durationInUnits.format(DateFormat.DAYS_FORMAT);
   }
 };

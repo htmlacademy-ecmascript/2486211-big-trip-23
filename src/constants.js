@@ -1,3 +1,5 @@
+const MAX_COUNT_DESTINATIONS = 3;
+
 const GROUP_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 const DEFAULT_POINT = {
@@ -20,16 +22,16 @@ const SortType = {
 
 const FilterType = {
   EVERYTHING: 'Everything',
-  PAST: 'Past',
-  PRESENT: 'Present',
   FUTURE: 'Future',
+  PRESENT: 'Present',
+  PAST: 'Past',
 };
 
 const StubText = {
   [FilterType.EVERYTHING]: 'Click New Event to create your first point',
-  [FilterType.PAST]: 'There are no past events now',
-  [FilterType.PRESENT]: 'There are no present events now',
   [FilterType.FUTURE]: 'There are no future events now',
+  [FilterType.PRESENT]: 'There are no present events now',
+  [FilterType.PAST]: 'There are no past events now',
   LOADING: 'Loading...',
   LOADING_ERROR: 'Failed to load latest route information'
 };
@@ -57,4 +59,4 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
-export { GROUP_TYPES, StubText, FilterType, Mode, SortType, UserAction, UpdateType, DEFAULT_POINT, TimeLimit};
+export { GROUP_TYPES, StubText, FilterType, Mode, SortType, UserAction, UpdateType, DEFAULT_POINT, TimeLimit, MAX_COUNT_DESTINATIONS};

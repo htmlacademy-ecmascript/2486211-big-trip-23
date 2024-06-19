@@ -8,14 +8,17 @@ export default class NewPointPresenter {
   #point = DEFAULT_POINT;
   #handleDataChange = null;
   #handleDestroy = null;
+  #handleReset = null;
+
   #editorComponent = null;
   #defaultType = GROUP_TYPES[5];
 
-  constructor({eventListContainer, pointsModel, onDataChange, onDestroy}) {
+  constructor({eventListContainer, pointsModel, onDataChange, onDestroy, onReset}) {
     this.#eventListContainer = eventListContainer;
     this.#pointsModel = pointsModel;
     this.#handleDataChange = onDataChange;
     this.#handleDestroy = onDestroy;
+    this.#handleReset = onReset;
   }
 
   init() {
@@ -43,6 +46,7 @@ export default class NewPointPresenter {
     }
 
     this.#handleDestroy();
+    this.#handleReset();
 
     remove(this.#editorComponent);
     this.#editorComponent = null;

@@ -51,7 +51,7 @@ const createEditorPointTemplate = (state, allDestinations) => {
     ? `<section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${pointDestination.description}</p>
-        ${createImageSection(pointDestination.pictures)}
+        ${pointDestination.pictures.length === 0 || !pointDestination.pictures ? '' : createImageSection(pointDestination.pictures)}
       </section>` : '';
 
   const createDesinationTemplate = allDestinations
@@ -107,7 +107,7 @@ const createEditorPointTemplate = (state, allDestinations) => {
           <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" min="1" max="10000" step="1" value="${basePrice}" ${isDisabled ? 'disabled' : ''}>
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaving ? 'disabled' : ''}>${isSaving ? 'Saving' : 'Save'}</button>
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isSaving ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
         <button class="event__reset-btn" type="reset" ${isDeleting ? 'disabled' : ''}>${setButtonName(id, isDeleting)}</button>
         ${createButtonRollUp}
       </header>

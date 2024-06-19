@@ -8,10 +8,12 @@ import { remove, render } from '../framework/render.js';
 import { FilterType, SortType, StubText, TimeLimit, UpdateType, UserAction } from '../constants.js';
 import { sortByDay, sortByPrice, sortByTime } from '../utils/sort.js';
 import { filter } from '../utils/filter.js';
+import TripInfoPresenter from './trip-info-presenter.js';
 
 
 export default class PagePresenter {
   #eventsListContainer = null;
+  #tripMainContainer = null;
 
   #pointsModel = null;
   #filterModel = null;
@@ -19,12 +21,16 @@ export default class PagePresenter {
   #sorting = null;
   #listEmpty = null;
   #loadingComponent = null;
+  #loadingErrorComponent = null;
 
   #pointPresenters = new Map();
   #newPointPresenter = null;
+  #tripInfoPresenter = null;
+  #newPointButton = null;
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
   #loadingStub = Object.keys(StubText).find((item) => item === 'LOADING');
+  #loadingErrorStub = Object.keys(StubText).find((item) => item === 'LOADING_ERROR');
   #isLoading = true;
 
   #eventsListComponent = new EventsList();
@@ -33,16 +39,19 @@ export default class PagePresenter {
     upperLimit: TimeLimit.UPPER_LIMIT
   });
 
-  constructor({eventsListContainer, pointsModel, filterModel, onNewPointDestroy}) {
+  constructor({tripMainContainer, eventsListContainer, pointsModel, filterModel, newPointButtonComponent, onNewPointDestroy}) {
+    this.#tripMainContainer = tripMainContainer;
     this.#eventsListContainer = eventsListContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+    this.#newPointButton = newPointButtonComponent.element;
 
     this.#newPointPresenter = new NewPointPresenter({
       eventListContainer: this.#eventsListComponent.element,
       pointsModel: this.#pointsModel,
       onDataChange: this.#handleViewAction,
-      onDestroy: onNewPointDestroy
+      onDestroy: onNewPointDestroy,
+      onReset: this.#handleFormReset,
     });
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
@@ -69,19 +78,22 @@ export default class PagePresenter {
     return filteredPoint;
   }
 
+  get error() {
+    return this.#pointsModel.error;
+  }
+
   init() {
     this.#renderPage();
   }
 
   createPoint() {
-    if (this.#listEmpty) {
-      remove(this.#listEmpty);
-    }
-
     this.#currentSortType = SortType.DAY;
     this.#filterType = FilterType.EVERYTHING;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init();
+    if (this.#listEmpty) {
+      remove(this.#listEmpty);
+    }
   }
 
   #renderPoint(point) {
@@ -99,6 +111,14 @@ export default class PagePresenter {
     points.forEach((point) => this.#renderPoint(point));
   }
 
+  #renderTripInfo() {
+    this.#tripInfoPresenter = new TripInfoPresenter({
+      pointsModel: this.#pointsModel,
+      tripMainContainer: this.#tripMainContainer,
+    });
+    this.#tripInfoPresenter.init();
+  }
+
   #renderListEmpty() {
     this.#listEmpty = new Stub({
       filterType: this.#filterType
@@ -111,6 +131,14 @@ export default class PagePresenter {
       filterType: this.#loadingStub,
     });
     render(this.#loadingComponent, this.#eventsListContainer);
+  }
+
+  #renderLoadingError() {
+    this.#loadingErrorComponent = new Stub({
+      filterType: this.#loadingErrorStub,
+    });
+    this.#newPointButton.disabled = true;
+    render(this.#loadingErrorComponent, this.#eventsListContainer);
   }
 
   #renderSorting() {
@@ -128,6 +156,11 @@ export default class PagePresenter {
 
   #renderPage() {
 
+    if (this.error) {
+      this.#renderLoadingError();
+      return;
+    }
+
     if (this.#isLoading) {
       this.#renderLoading();
       return;
@@ -135,13 +168,16 @@ export default class PagePresenter {
 
     if (this.points.length === 0) {
       this.#renderListEmpty();
-      return;
     }
-    this.#renderSorting();
+    if (this.points.length > 0) {
+      this.#renderSorting();
+    }
+    this.#renderTripInfo();
     this.#renderEventsList();
   }
 
   #clearPage({resetSortType = false} = {}) {
+    this.#tripInfoPresenter.destroy();
     this.#newPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
@@ -157,6 +193,13 @@ export default class PagePresenter {
       this.#currentSortType = SortType.DAY;
     }
   }
+
+  #handleFormReset = () => {
+    if (this.points.length === 0) {
+      remove(this.#sorting);
+      this.#renderListEmpty();
+    }
+  };
 
   #handleModeChange = () => {
     this.#newPointPresenter.destroy();

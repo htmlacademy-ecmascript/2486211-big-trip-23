@@ -1,9 +1,8 @@
 import PagePresenter from './presenter/page-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
-import TripInfo from './view/trip-info.js';
 import PointsModel from './model/points-model.js';
 import FilterModel from './model/filter-model.js';
-import { RenderPosition, render } from './framework/render.js';
+import { render } from './framework/render.js';
 import NewPointButton from './view/new-point-button.js';
 import PointsApiService from './server/points-api-service.js';
 
@@ -19,19 +18,22 @@ const pointsModel = new PointsModel({
 });
 const filterModel = new FilterModel();
 
+const newPointButtonComponent = new NewPointButton({
+  onClick: handleNewPointButtonClick
+});
+
 const pagePresenter = new PagePresenter({
+  tripMainContainer: tripMainElement,
   eventsListContainer: tripEventsSectionElement,
   pointsModel,
   filterModel,
+  newPointButtonComponent,
   onNewPointDestroy: handleNewPointFormClose,
 });
 const filterPresenter = new FilterPresenter({
   filterContainer: tripFiltersElement,
   filterModel,
   pointsModel
-});
-const newPointButtonComponent = new NewPointButton({
-  onClick: handleNewPointButtonClick
 });
 
 function handleNewPointFormClose() {
@@ -42,8 +44,6 @@ function handleNewPointButtonClick() {
   pagePresenter.createPoint();
   newPointButtonComponent.element.disabled = true;
 }
-
-render(new TripInfo(), tripMainElement, RenderPosition.AFTERBEGIN);
 
 filterPresenter.init();
 pagePresenter.init();
