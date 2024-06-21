@@ -181,13 +181,13 @@ export default class EditorPoint extends AbstractStatefulView {
       .addEventListener('change', this.#destinationChangeHandler);
 
     this.element.querySelector('.event__input--price')
-      .addEventListener('input', this.#priceChangeHandler);
+      .addEventListener('input', this.#priceInputHandler);
 
     this.element.querySelector('.event__reset-btn')
       .addEventListener('click', this.#formDeleteClickHandler);
 
     this.element.querySelector('.event__available-offers')
-      ?.addEventListener('change', this.#offerSelectHandler);
+      ?.addEventListener('change', this.#offersChangeHandler);
 
     this.#setDatepickerStart();
     this.#setDatepickerEnd();
@@ -287,7 +287,7 @@ export default class EditorPoint extends AbstractStatefulView {
     });
   };
 
-  #priceChangeHandler = (evt) => {
+  #priceInputHandler = (evt) => {
     evt.preventDefault();
     const newPrice = evt.target.value;
     this._setState({
@@ -300,7 +300,7 @@ export default class EditorPoint extends AbstractStatefulView {
     this.#handleDeleteClick(EditorPoint.parseStateToPoint(this.#initialPoint));
   };
 
-  #offerSelectHandler = () => {
+  #offersChangeHandler = () => {
     const checkedOffersElement = this.element.querySelectorAll('.event__offer-checkbox:checked');
     const checkedOffersById = Array.from(checkedOffersElement).map((item) => item.dataset.offerId);
     this._setState({

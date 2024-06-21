@@ -61,21 +61,21 @@ export default class PagePresenter {
   get points() {
     this.#filterType = this.#filterModel.filter;
     const points = this.#pointsModel.points;
-    const filteredPoint = filter[this.#filterType](points);
+    const filteredPoints = filter[this.#filterType](points);
 
     switch (this.#currentSortType) {
       case SortType.TIME:
-        filteredPoint.sort(sortByTime);
+        filteredPoints.sort(sortByTime);
         break;
       case SortType.PRICE:
-        filteredPoint.sort(sortByPrice);
+        filteredPoints.sort(sortByPrice);
         break;
       case SortType.DAY:
-        filteredPoint.sort(sortByDay);
+        filteredPoints.sort(sortByDay);
         break;
     }
 
-    return filteredPoint;
+    return filteredPoints;
   }
 
   get error() {
