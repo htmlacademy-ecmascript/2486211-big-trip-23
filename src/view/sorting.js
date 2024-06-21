@@ -31,14 +31,14 @@ export default class Sorting extends AbstractView {
     super();
     this.#checkedSortType = checkedSortType;
     this.#handleSortTypeChange = onSortTypeChange;
-    this.element.addEventListener('click', this.#sortTypeChangeHandler);
+    this.element.addEventListener('click', this.#sortTypeClickHandler);
   }
 
   get template() {
     return createSortingTemplate(this.#checkedSortType);
   }
 
-  #sortTypeChangeHandler = (evt) => {
+  #sortTypeClickHandler = (evt) => {
     if (!evt.target.matches('input[name="trip-sort"]')) {
       return;
     }
